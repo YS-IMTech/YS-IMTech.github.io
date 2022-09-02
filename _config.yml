@@ -8,7 +8,7 @@ description: Personal website powered by ShuaiYang
 # baseurl: The subpath of your site
 # > set this to "", if you renamed the repository to <user>.github.io
 baseurl: "https://ys-imtech.github.io/"
-
+profile_picture: assets/img/ys_profile.jpg
 # LANDING PAGE
 # username: This will displayed on the landing page as your name.
 username: Shuai Yang
