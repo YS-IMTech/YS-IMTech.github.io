@@ -17,45 +17,27 @@
 #     - tag: Rails
 #   timeline-side: right
 
-- title: airbnb
-  title-url: https://example.com/
-  date: Sep 2019 - Present
-  subtitle: Fullstack Developer
-  tags:
-    - tag: React
-    - tag: Javascript
-    - tag: Ruby
-    - tag: Rails
+- title: National Undergraduate Surveying and Mapping Discipline Innovation and Entrepreneurship Intelligence Competition
+  date: 2022.08
+  subtitle: National second prize
   timeline-side: right
 
-- title: Google
-  title-url: https://example.com/
-  date: Mar 2019 - Sep 2019
-  subtitle: Software Engineer as Intern
-  tags:
-    - tag: Flutter
-    - tag: Dart
-    - tag: Keycloak
-  timeline-side: right
-
-- title: Super University
-  title-url: https://example.com/
-  date: 2017 - 2019
-  subtitle: M.Sc. Computer Science
+- title: National University Student Surveying and Mapping Scientific and Technological Paper Competition
+  date: 2022.07
+  subtitle: National second prize
   timeline-side: left
 
-- title: Facebook
-  title-url: https://example.com/
-  date: Sep 2017 - Mar 2019
-  subtitle: Front-End Developer as Intern
-  tags:
-    - tag: React
-    - tag: Node
-    - tag: Javascript
+- title: China Undergraduate Mathematical Contest in Modeling
+  date: 2021.12
+  subtitle: Shanghai second prize
   timeline-side: right
 
-- title: Super University
-  title-url: https://example.com/
-  date: 2014 - 2017
-  subtitle: B.A. Computer Science
+- title: USA Interdisciplinary Contest In Modeling
+  date: 2021.04
+  subtitle: Honorable Mention
   timeline-side: left
+
+- title: The 3rd China University intelligent robot creativity competition
+  date: 2020.12
+  subtitle: National second prize
+  timeline-side: right
