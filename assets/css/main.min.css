@@ -10,7 +10,7 @@
   text-align: center;
   vertical-align: middle;
   border: solid 2px white;
-  margin-left:25%; 
+  margin-left:32%; 
 }
 
 .profile-pic:hover {
@@ -20,7 +20,8 @@
 }
 
 .profile-pic-div {
-
+  display: -webkit-box;
+  display: -ms-flexbox;
   display:flex; 
   flex-wrap:wrap; 
   flex-content:center; 
