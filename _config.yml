@@ -76,9 +76,12 @@ os_projects_title: Open Source Projects
 show_contact_card: true
 # contact_title: The will be displayed as the title in the Contact section
 contact_title: Contact
-# contact_description: This will be displayed under the title.
-contact_description: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. If you like this theme and want to use it for yourself, checkout the source code and the documentation at <a class="highlight-link" href="https://github.com/longpdo/neumorphism" target="_blank" rel="noreferrer"> Github </a>.
-
+# contact_description: My hometown is Wenzhou, Zhejiang Province, but now I am studying in Yangpu District, Shanghai; There are many ways to contact me, mainly in the following ways:
+Main E-mail: 1950893@tongji.edu.cn
+Other E-mail: 809550138@qq.com / MikeyWeyas@126.com
+Mobile number: + 86-19821228358
+Wechat-Number: 19821228358
+QQ-Number: 809550138
 # GITHUB-METADATA
 # Set this to your forked repository
 # > e.g. <user>/<user>.github.io
