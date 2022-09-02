@@ -46,7 +46,7 @@ skills_title: Skills
 # > setting this to false, will omit the Timeline section
 show_timeline_card: true
 # timeline_title: The will be displayed as the title in the Timeline section
-timeline_title: Award Experience
+timeline_title: Awards Experience
 # cv_download_link: The link where you host your cv.
 # > e.g. you share your cv on your dropbox, then add the dropbox link here
 cv_download_link: https://example.com/
@@ -61,11 +61,11 @@ show_projects_card: true
 # > setting this to false, will omit your listed projects
 show_projects: true
 # projects_title: The will be displayed as the title of your projects
-projects_title: Projects
+projects_title: Projects Experience
 # show_os_projects:
 # > setting this to true, will display your public projects on github
 # > setting this to false, will omit your public projects on github
-show_os_projects: true
+show_os_projects: false
 # os_projects_title: The will be displayed as the title of your open source projects
 os_projects_title: Open Source Projects
 
@@ -76,7 +76,7 @@ os_projects_title: Open Source Projects
 show_contact_card: true
 # contact_title: The will be displayed as the title in the Contact section
 contact_title: Contact
-# contact_description: "My hometown is Wenzhou, Zhejiang Province, but now I am studying in Yangpu District, Shanghai; There are many ways to contact me, mainly in the following ways:Main E-mail: 1950893@tongji.edu.cnOther E-mail: 809550138@qq.com / MikeyWeyas@126.comMobile number: +86-19821228358Wechat-Number: 19821228358QQ-Number: 809550138
+# contact_description: My hometown is Wenzhou, Zhejiang Province, but now I am studying in Yangpu District, Shanghai
 # GITHUB-METADATA
 # Set this to your forked repository
 # > e.g. <user>/<user>.github.io
