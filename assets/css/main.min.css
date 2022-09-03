@@ -2,7 +2,7 @@
 
 .profile-pic {
   border-radius: 50%;
-   margin: 0 auto; 
+
   display: block;
   max-width:100%;
   height:auto;
@@ -24,8 +24,6 @@
           justify-content: center;
 
    margin: 0 auto; 
-  display: block;
-  max-width:100%;
-  height:auto;
+
 }
 
