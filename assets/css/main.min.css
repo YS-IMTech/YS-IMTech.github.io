@@ -21,7 +21,7 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  margin-left:28%; 
+  margin-left:30% auto; 
 }
 
 
