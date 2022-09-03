@@ -28,7 +28,7 @@ show_profile_pic: true
 # show_aboutme_card:
 # > setting this to true, will display the About Me section
 # > setting this to false, will omit the About Me section
-show_aboutme_card: false
+show_aboutme_card: true
 # about_me_title: The will be displayed as the title in the About Me section
 about_me_title: About Me
 # about_me_description: This will be displayed under the title.
@@ -37,7 +37,7 @@ about_me_description: My name is Yang Shuai, from the college of surveying and G
 # show_skills_card:
 # > setting this to true, will display the Skills section
 # > setting this to false, will omit the Skills section
-show_skills_card: true
+show_skills_card: false
 # about_me_title: The will be displayed as the title in the Skills section
 skills_title: Skills
 
