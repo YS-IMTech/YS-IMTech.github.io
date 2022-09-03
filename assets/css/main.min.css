@@ -2,11 +2,16 @@
 
 .profile-pic {
   border-radius: 50%;
-
-  display: block;
-  max-width:100%;
-  height:auto;
+  width: 600px;
+  height: 440px;
+  display:flex; 
+  flex-wrap:wrap; 
+  flex-content:center; 
+  items-align:center;
+  text-align: center;
+  vertical-align: middle;
   border: solid 2px white;
+  margin-left:30%; 
 }
 
 .profile-pic:hover {
@@ -18,12 +23,13 @@
 .profile-pic-div {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex;
+  display:flex; 
+  flex-wrap:wrap; 
+  flex-content:center; 
+  items-align:center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-
-   margin: 0 auto; 
-
+  margin-left:30%; 
 }
 
