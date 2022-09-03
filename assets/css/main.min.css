@@ -2,8 +2,8 @@
 
 .profile-pic {
   border-radius: 50%;
-  width: 150px;
-  height: 110px;
+  width: 30%
+  height: 30%
   display:flex; 
   flex-wrap:wrap; 
   flex-content:center; 
