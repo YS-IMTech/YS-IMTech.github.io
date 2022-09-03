@@ -2,8 +2,10 @@
 
 .profile-pic {
   border-radius: 50%;
-  width: 600px;
-  height: 440px;
+   margin: 0 auto; 
+  display: block;
+  max-width:100%;
+  height:auto;
   border: solid 2px white;
 }
 
@@ -21,6 +23,9 @@
       -ms-flex-pack: center;
           justify-content: center;
 
-  margin: 35% auto;
+   margin: 0 auto; 
+  display: block;
+  max-width:100%;
+  height:auto;
 }
 
