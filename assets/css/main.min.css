@@ -2,8 +2,8 @@
 
 .profile-pic {
   border-radius: 50%;
-  width: 300;
-  height: 220px;
+  width: 600;
+  height: 440px;
   border: solid 2px white;
 }
 
@@ -20,6 +20,6 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  margin-bottom: 20px;
+  margin: 0 auto;
 }
 
