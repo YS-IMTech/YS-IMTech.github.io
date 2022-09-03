@@ -32,7 +32,7 @@ show_aboutme_card: true
 # about_me_title: The will be displayed as the title in the About Me section
 about_me_title: About Me
 # about_me_description: This will be displayed under the title.
-about_me_description: My name is Yang Shuai, from the college of surveying and Geo-Informatics of Tongji University, majoring in photogrammetry and computer vision. I am committed to the research of intelligent processing of hyperspectral remote sensing data and computer vision, including remote sensing image processing. My tutors are Xu Xiong and Zhang Shaoming, mainly engaged in multi-source data fusion and application, global surface coverage mapping and change detection, deep space exploration visual navigation and positioning research, and mature slam solutions for robots and unmanned vehicles with multiple costs. I will graduate from Tongji University in 2023. At present, I am a senior student and will soon complete my postgraduate guarantee work.
+about_me_description: My name is Shuai Yang , from the college of surveying and Geo-Informatics of Tongji University, majoring in photogrammetry and computer vision. I am committed to the research of intelligent processing of hyperspectral remote sensing data and computer vision, including remote sensing image processing. My tutors are Xu Xiong and Zhang Shaoming, mainly engaged in multi-source data fusion and application, global surface coverage mapping and change detection, deep space exploration visual navigation and positioning research, and mature slam solutions for robots and unmanned vehicles with multiple costs. I will graduate from Tongji University in 2023. At present, I am a senior student and will soon complete my postgraduate guarantee work.
 # SKILLS SECTION
 # show_skills_card:
 # > setting this to true, will display the Skills section
@@ -77,7 +77,7 @@ os_projects_title: Open Source Projects
 show_contact_card: true
 # contact_title: The will be displayed as the title in the Contact section
 contact_title: Contact
-contact_description: In addition to finding me through the following GitHub & e-mail, you can also find my Wechat & Mobile Phone number  [19821228358]
+contact_description: In addition to finding me through the following GitHub & e-mail, you can also find me through Wechat & Mobile Phone number  [19821228358]
 # GITHUB-METADATA
 # Set this to your forked repository
 # > e.g. <user>/<user>.github.io
