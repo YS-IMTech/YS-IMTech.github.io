@@ -2,7 +2,7 @@
 
 # GENERAL SITE SETTINGS
 # title: This will be displayed as the website's name in your browser tab.
-title: YSsssMikey
+title: Yang Shuai
 # description: This will be meta HTML tag content. This can be ignored.
 description: Personal website powered by ShuaiYang
 # baseurl: The subpath of your site
@@ -11,7 +11,7 @@ baseurl: "https://ys-imtech.github.io/"
 profile_picture: assets/img/ys_profile.jpg
 # LANDING PAGE
 # username: This will displayed on the landing page as your name.
-username: Shuai Yang
+username: Yang Shuai
 # typing_text: This will be typed before 'scroll down for more'.
 # > set this to your job title, e.g. Fullstack Developer
 typing_text: Welcome to YS Personal Website !!!
