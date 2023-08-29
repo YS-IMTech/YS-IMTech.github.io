@@ -1,11 +1,14 @@
 ---
-layout: archive
+permalink: /
 title: "SHUAI YANG(SJTU)"
-permalink: /cv/
+excerpt: "About me"
 author_profile: true
-redirect_from:
-  - /resume
+redirect_from: 
+  - /about/
+  - /about.html
 ---
+{% include base_path %}
+
 
 {% include base_path %}
 About me
