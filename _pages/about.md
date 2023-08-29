@@ -16,8 +16,8 @@ I am currently a first-year Ph.D. student in the Shanghai Jiaotong University & 
 
 Education
 ======
-* B.S. in Tongji University, 2019-2023
-* Ph.D in Shanghai Jiao Tong University, 2023-present
+* B.S. in Tongji University, <p style="text-align:right;">2019-2023</p>
+* Ph.D in Shanghai Jiao Tong University, <p style="text-align:right;">2023-present</p>
 
 
 News
