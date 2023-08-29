@@ -11,9 +11,9 @@ title                    : "Shuai Yang / YS-IMTech"
 title_separator          : "-"
 name                     : &name "Shuai Yang"
 description              : &description "personal description"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://ys-imtech.github.io/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "academicpages/academicpages.github.io"
+repository               : "YS-IMTech/YS-IMTech.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 breadcrumbs              : false # true, false (default)
 words_per_minute         : 160
@@ -83,9 +83,9 @@ author:
   name             : "Shuai Yang"
   avatar           : "ys.png"
   bio              : "Phd student@SJTU, Research Intern@Shanghai AI Lab"
-  location         : "Location"
+  location         : "Shanghai"
   employer         :
-  pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
+  pubmed           : ""
   googlescholar    : 
   email            :
   researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
