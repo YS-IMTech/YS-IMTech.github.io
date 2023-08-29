@@ -81,7 +81,7 @@ analytics:
 # Site Author
 author:
   name             : "Shuai Yang"
-  avatar           : "assets/ys.jpg"
+  avatar           : "ys.png"
   bio              : "Phd student@SJTU, Research Intern@Shanghai AI Lab"
   location         : "Location"
   employer         :
