@@ -1,6 +1,5 @@
 ---
 permalink: /
-title: "SHUAI YANG(SJTU)"
 excerpt: "About me"
 author_profile: true
 redirect_from: 
@@ -10,7 +9,6 @@ redirect_from:
 {% include base_path %}
 
 
-{% include base_path %}
 About me
 ======
 I am currently a PH.D. student supervised by Prof. <a href="http://dahua.me/" target="_blank" rel="noopener">Dahua Lin</a> at Shanghai Jiaotong University & <a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a> in 2023.I also works closely with Dr. <a href="https://wutong16.github.io/" target="_blank" rel="noopener">Tong Wu</a> in Multi-Media Lab(MMLab) at CUHK. Now I am a research intern at the Shanghai Artificial Intelligence Laboratory, my research interests include 3D AIGC, multimodal learning.
