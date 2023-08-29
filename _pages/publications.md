@@ -1,6 +1,5 @@
 ---
 layout: archive
-title: "SHUAI YANG(SJTU)"
 permalink: /publications/
 author_profile: true
 ---
