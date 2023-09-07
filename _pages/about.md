@@ -11,7 +11,7 @@ redirect_from:
 
 About me
 ======
-I am currently a first-year Ph.D. student in the Shanghai Jiaotong University & <a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a> ,supervised by Prof. <a href="http://dahua.me/" target="_blank" rel="noopener">Dahua Lin</a>. I also works closely with Dr. <a href="https://wutong16.github.io/" target="_blank" rel="noopener">Tong Wu</a> in Multi-Media Lab(MMLab) at CUHK. Now I am a research intern at the Shanghai Artificial Intelligence Laboratory, my research interests include 3D AIGC, multimodal learning, computer graphics.
+I am currently a first-year Ph.D. student in the Shanghai Jiaotong University & <a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a> ,co-supervised by Prof. <a href="http://dahua.me/" target="_blank" rel="noopener">Dahua Lin</a> and Prof. <a href="https://liuziwei7.github.io/" target="_blank" rel="noopener">Ziwei Liu</a>. I also works closely with Dr. <a href="https://wutong16.github.io/" target="_blank" rel="noopener">Tong Wu</a> in Multi-Media Lab(MMLab) at CUHK. Now I am a research intern at the Shanghai Artificial Intelligence Laboratory, my research interests include 3D AIGC, multimodal learning, computer graphics.
 
 
 Education
