@@ -30,7 +30,7 @@ News
 * [2022-07] Won the National second prize of China Undergraduate Surveying and Mapping Discipline Innovation and Entrepreneurship Intelligence Competition!
 * [2021-12] Won the Shanghai second prize of China Undergraduate Mathematical Contest in Modeling!
 * [2021-04] Won the Honorable Mention of Interdisciplinary Contest In Modeling!
-* [2020-12] Won the National second prize of China University Student Surveying and Mapping Scientific and Technological Paper Competition!
+* [2020-12] Won the National second prize of China University Intelligent Robot Creative Competition!
 * [2019-09] Start my journey in <a href="https://www.tongji.edu.cn/" target="_blank" rel="noopener">Tongji University</a>!
 * [2019-02] Won the Second prize of Chinese High School Mathematics League!
 
