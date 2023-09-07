@@ -16,13 +16,13 @@ I am currently a first-year Ph.D. student in the Shanghai Jiaotong University & 
 
 Education
 ======
-* B.S. in Tongji University, <p align = "right">2019-2023</p>
-* Ph.D in Shanghai Jiao Tong University, <p align = "right">2023-present</p>
+* B.S. in Tongji University                 2019-2023
+* Ph.D in Shanghai Jiao Tong University     2023-present
 
 
 News
 ======
-* [2023-09] Start my journey in Shanghai Jiao Tong University!
+* [2023-09] Start my journey in (<a href="https://www.sjtu.edu.cn/" target="_blank" rel="noopener">Shanghai Jiao Tong University</a>)!
 * [2023-06] Graduated from Tongji University!
 * [2022-11] Join Shanghai Artificial Intelligence Lab(<a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a>)!
 * [2022-07] Won the National second prize of China University Student Surveying and Mapping Scientific and Technological Paper Competition!
@@ -30,7 +30,7 @@ News
 * [2021-12] Won the Shanghai second prize of China Undergraduate Mathematical Contest in Modeling!
 * [2021-04] Won the Honorable Mention of Interdisciplinary Contest In Modeling!
 * [2020-12] Won the National second prize of China University Student Surveying and Mapping Scientific and Technological Paper Competition!
-* [2019-09] Start my journey in Tongji University!
+* [2019-09] Start my journey in (<a href="https://www.tongji.edu.cn/" target="_blank" rel="noopener">Tongji University</a>)!
 * [2019-02] Won the Second prize of Chinese High School Mathematics League!
 
 
