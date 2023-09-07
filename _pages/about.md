@@ -22,6 +22,15 @@ Education
 
 News
 ======
-* [2022-11] Join Shanghai Artificial Intelligence Lab(<a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a>)!
-* [2023-06] Graduated from Tongji University!
 * [2023-09] Start my journey in Shanghai Jiao Tong University!
+* [2023-06] Graduated from Tongji University!
+* [2022-11] Join Shanghai Artificial Intelligence Lab(<a href="https://www.shlab.org.cn/" target="_blank" rel="noopener">PJLAB</a>)!
+* [2022-07] Won the National second prize of China University Student Surveying and Mapping Scientific and Technological Paper Competition!
+* [2022-07] Won the National second prize of China Undergraduate Surveying and Mapping Discipline Innovation and Entrepreneurship Intelligence Competition!
+* [2021-12] Won the Shanghai second prize of China Undergraduate Mathematical Contest in Modeling!
+* [2021-04] Won the Honorable Mention of Interdisciplinary Contest In Modeling!
+* [2020-12] Won the National second prize of China University Student Surveying and Mapping Scientific and Technological Paper Competition!
+* [2019-09] Start my journey in Tongji University!
+* [2019-02] Won the Second prize of Chinese High School Mathematics League!
+
+
