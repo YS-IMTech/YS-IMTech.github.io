@@ -30,12 +30,13 @@ I am currently a first-year Ph.D. student in the Shanghai Jiaotong University & 
 
 # Publications 
 
-
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">NeurIPS 2023 D&B Track </div><img src='images/hyperdreamer.png' alt="sym" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge">SIGGRAPH Asia</div><img src='images/hyperdreamer.png' alt="sym" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
 
-HyperDreamer: Hyper-Realistic 3D Content Generation and Editing from a Single Image. [[**Project**]](https://github.com/EricLee0224/PAD) [[**Paper**]](https://arxiv.org/pdf/2310.07716.pdf)
+
+HyperDreamer: Hyper-Realistic 3D Content Generation and Editing from a Single Image. 
+[[**Project**]](https://ys-imtech.github.io/) [[**Paper**]](https://ys-imtech.github.io/)
 
 SIGGRAPH Asia, 2023, conference track, **comming soon**
 [[Tong Wu\*]](https://wutong16.github.io/), [[Zhibing Li\*]](https://github.com/Lizb6626), **Shuai Yang\***, [[Pan Zhang]](https://panzhang0212.github.io/), [[Xingang Pan]](https://xingangpan.github.io/), [[Jiaqi Wang]](https://myownskyw7.github.io/), [[Ziwei Liu]](https://liuziwei7.github.io/), [[Dahua Lin]](http://dahua.me/).
