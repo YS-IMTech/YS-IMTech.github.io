@@ -1,0 +1,658 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .gallery-container {
+          position: relative;
+          width: 100%; /* Expand to full width */
+          margin: auto;
+        }
+        .gallery {
+          display: flex;
+          overflow-x: scroll;
+          scroll-behavior: smooth;
+          padding: 10px;
+          background-color: #f5f5f5;
+          scrollbar-width: none; /* Firefox */
+        }
+        .gallery::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+        .gallery-item {
+          flex: 0 0 calc(25% - 20px); /* Four items per row */
+          margin: 0 10px;
+          text-align: center;
+        }
+        .gallery-item video {
+          width: 100%;
+          height: auto;
+          cursor: pointer;
+        }
+        .gallery-item p {
+          margin-top: 5px;
+          font-size: 14px;
+        }
+        .arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 2rem;
+          cursor: pointer;
+          user-select: none;
+          z-index: 10;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+          padding: 10px;
+        }
+        .arrow-left {
+          left: 10px; /* Adjust as needed */
+        }
+        .arrow-right {
+          right: 10px; /* Adjust as needed */
+        }
+        .authors {
+            color: #ffffff; /* Dark blue color */
+            font-weight: bold;
+            font-size: 1.25rem; /* Adjust font size if necessary */
+          }
+          .authors a {
+            color: #b6e0f8cb; /* Dark blue color for links */
+            text-decoration: none; /* Optional: remove underline from links */
+          }
+          .authors sup {
+            color: #ffffff; /* Dark blue color for superscripts */
+          }
+      </style>
+    <!-- ################################################ -->
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>HyperPano: Text-Guided Hyper-Immersive Panoramic Scene Generation</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="images/teaser.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1711">
+    <meta property="og:image:height" content="576">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ys-imtech.github.io/projects/HyperPano/"/>
+    <meta property="og:title" content="HyperPano: Text-Guided Hyper-Immersive Panoramic Scene Generation" />
+    <meta property="og:description" content="3D immersive scene generation is a topic of growing interest. Yet, the scarcity of available 3D training data and the complexity of representing 3D scenes efficiently make this a significantly more challenging problem than 2D image generation. To address this challenge, we introduce HyperPano---a framework for immersive panoramic 3D scene generation from a single text prompt. HyperPano makes several important design choices: we argue that panoramas are a powerful prior to represent immersive 2D scenes and lift them into a 3D Gaussian representation to splat detailed 360-degree omnidirectional scenes; we leverage the advantages of both perspective images and panoramas captured by two different camera projection models. Our unique multi-view diffusion and panorama outpainting models are combined to generate a high-resolution panorama. Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both quality and diversity. We believe that HyperPano holds promise for advancing 3D panoramic scene creation with numerous applications.
+    ."/>
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HyperPano: Text-Guided Hyper-Immersive Panoramic Scene Generation" />
+    <meta name="twitter:description" content="3D immersive scene generation is a topic of growing interest. Yet, the scarcity of available 3D training data and the complexity of representing 3D scenes efficiently make this a significantly more challenging problem than 2D image generation. To address this challenge, we introduce HyperPano---a framework for immersive panoramic 3D scene generation from a single text prompt. HyperPano makes several important design choices: we argue that panoramas are a powerful prior to represent immersive 2D scenes and lift them into a 3D Gaussian representation to splat detailed 360-degree omnidirectional scenes; we leverage the advantages of both perspective images and panoramas captured by two different camera projection models. Our unique multi-view diffusion and panorama outpainting models are combined to generate a high-resolution panorama. Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both quality and diversity. We believe that HyperPano holds promise for advancing 3D panoramic scene creation with numerous applications.
+    "/>
+    <meta name="twitter:image" content="images/teaser.png" />
+
+<link rel="icon" href="images/icon.png">
+
+<!-- <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>"> -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/fontawesome.all.min.css">
+	<link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+
+	<!-- Google tag (gtag.js) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+	<script defer src="js/fontawesome.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/synced_video_selector.js"></script>
+
+</head>
+
+<body style="padding: 0%; width: 100%">
+    <div class="desktop-content">
+    <div class="video-background" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="videos/teaser/teaser.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="flex-center-container"> <!-- New container for flexbox centering -->
+            <div class="content">
+                <!-- Your content here -->
+                <h1 style="font-size: 48px;"><b>HyperPano: Text-Guided Hyper-Immersive Panoramic Scene Generation</b></h1>
+
+                <p class="title is-5 mt-2 authors"> 
+                    <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>1,4*</sup>, 
+                    <a href="https://github.com/kszpxxzmc/" target="_blank">Mengchen Zhang</a><sup>2,4*</sup>, 
+                    <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>3,4</sup>, 
+                    <a href="https://stanford.edu/~gordonwz/" target="_blank">Gordon Wetzstein</a><sup>5</sup>,
+                    <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>6</sup>,
+                    <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>3,4</sup>&#9993
+              
+                  </p>
+                  <!-- affiliations -->
+                  <p class="subtitle is-5"> 
+                    <sup>1</sup> Shanghai Jiao Tong University, 
+                    <sup>2</sup> Zhejiang University, 
+                    <sup>3</sup> The Chinese University of Hong Kong,
+                    <br>
+                    <sup>4</sup> Shanghai AI Laboratory,
+                    <sup>5</sup> Stanford University, 
+                    <sup>6</sup> S-Lab, Nanyang Technological University
+                  </p>
+
+                <div class="row justify-content-center">
+                    <div class="col-12 h3">
+                        <a href="https://arxiv.org/abs/2312.04543" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                        <a href="https://www.youtube.com/watch?v=nfakbc-HflM" class="btn btn-outline-light" role="button" style="font-size: 20px;" >Youtube</a>
+                        <a href="https://github.com/wutong16/HyperDreamer" class="btn btn-outline-light" role="button" style="font-size: 20px;">Code</a>
+                    </div>
+                </div>
+                <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <div class="mobile-content">
+        <div class="container-fluid h-100 h-md-100 w-100 d-flex flex-column justify-content-center text-center my-5" style="height:100vh;">
+            <div class="row justify-content-center mb-3 order-md-first">
+                <div class="col-12">
+                    <!-- Removed "controls" and added "style='pointer-events: none;'" to prevent interactions -->
+                    <!-- <video id="myVideo" class="img-fluid w-100 w-md-50" loop autoplay muted playsinline poster="videos/teaser/poster.png">
+                        <source src="videos/teaser/teaser_twitter.mp4" type="video/mp4">
+                    </video> -->
+                    
+                    <div style="position:relative;padding-top:56.25%;">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/nfakbc-HflM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                      </div>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var video = document.getElementById('myVideo');
+    
+                        // Function to detect mobile devices
+                        function isMobileDevice() {
+                            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+                        };
+    
+                        // Initially disable pointer events for non-mobile devices and then enable after 2 seconds
+                        if (!isMobileDevice()) {
+                            //video.style.pointerEvents = 'none';
+                            setTimeout(function() {
+                                video.setAttribute('controls', '');
+                            }, 1500); // 2000 milliseconds = 2 seconds
+                        } else {
+                            // Enable controls for mobile devices
+                            video.setAttribute('controls', '');
+                        }
+                    });
+                    </script>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                    <h2><b>HyperPano</b>: Text-Guided Hyper-Immersive <br/> Panoramic Scene Generation</h2>
+                </div>
+
+                <p class="title is-5 mt-2 authors"> 
+                    <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>1,4*</sup>, 
+                    <a href="https://github.com/kszpxxzmc/" target="_blank">Mengchen Zhang</a><sup>2,4*</sup>, 
+                    <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>3,4</sup>, 
+                    <a href="https://stanford.edu/~gordonwz/" target="_blank">Gordon Wetzstein</a><sup>5</sup>,
+                    <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>6</sup>,
+                    <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>3,4</sup>&#9993
+              
+                  </p>
+                  <!-- affiliations -->
+                  <p class="subtitle is-5"> 
+                    <sup>1</sup> Shanghai Jiao Tong University, 
+                    <sup>2</sup> Zhejiang University, 
+                    <sup>3</sup> The Chinese University of Hong Kong,
+                    <br>
+                    <sup>4</sup> Shanghai AI Laboratory,
+                    <sup>5</sup> Stanford University, 
+                    <sup>6</sup> S-Lab, Nanyang Technological University
+                  </p>
+
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 h3">                        
+                    <a href="https://arxiv.org/abs/2312.04543" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                    <a href="https://www.youtube.com/watch?v=nfakbc-HflM" class="btn btn-light" role="button" style="font-size: 20px;" >Youtube</a>
+                    <a href="https://github.com/wutong16/HyperDreamer" class="btn btn-light" role="button" style="font-size: 20px;">Code</a>
+                </div>
+            </div>
+        </div>
+    
+        <div class="video-background">
+            <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                <source src="videos/teaser/teaser.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+            <div class="flex-center-container"> <!-- New container for flexbox centering -->
+                <div class="content">
+                    <!-- Your content here -->
+                    <h1>We generate Hyper-Immersive Panoramic scenes</h1>
+                    <h3>from a single text-description</h3>
+                    <!-- Buttons and other content -->
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+
+
+
+    <div class="desktop-content">
+        <div class="container-fluid px-5" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-5">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify px-5">
+                        <h3 style="font-size: 18px; font-weight: normal;">
+
+                        3D immersive scene generation is a topic of growing interest. Yet, the scarcity of available 3D training data and the complexity of representing 3D scenes efficiently make this a significantly more challenging problem than 2D image generation. 
+                        To address this challenge, we introduce <strong><em>HyperPano</em></strong>---a framework for immersive panoramic 3D scene generation from a single text prompt. 
+                        HyperPano makes several important design choices: 
+                        <b>1)</b> we argue that panoramas are a powerful prior to represent immersive 2D scenes and lift them into a 3D Gaussian representation to splat detailed 360-degree omnidirectional scenes;
+                        <b>2)</b> we leverage the advantages of both perspective images and panoramas captured by two different camera projection models. Our unique multi-view diffusion and panorama outpainting models are combined to generate a high-resolution panorama. 
+                        Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both quality and diversity. We believe that HyperPano holds promise for advancing 3D panoramic scene creation with numerous applications.
+                    </h3>
+
+                    </p>
+                </div>
+
+                <div class="col-md-7">
+
+                    <div style="position:relative;padding-top:56.25%;">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/nfakbc-HflM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                      </div>
+                    <!-- <video class="img-fluid" loop autoplay muted>
+                        <source src="videos/teaser/teaser_twitter.mp4" />
+                    </video> -->
+                </div>
+            </div>
+            <br>
+        </div>  
+        
+        <!-- <div class="container-fluid" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-12 text-center">
+                    <video id="myVideo" class="img-fluid w-50 w-md-75 mx-auto" loop autoplay muted playsinline poster="videos/teaser/poster.png" controls alt="RealmDreamer Teaser">
+                        <source src="videos/teaser/teaser_twitter.mp4" />
+                    </video>
+                </div>
+            </div>
+            <br>
+        </div>   -->
+    </div>
+
+    <div class="mobile-content">
+        <div class="container" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-6">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify">
+                            3D immersive scene generation is a topic of growing interest. Yet, the scarcity of available 3D training data and the complexity of representing 3D scenes efficiently make this a significantly more challenging problem than 2D image generation. 
+                            To address this challenge, we introduce <strong><em>HyperPano</em></strong>---a framework for immersive panoramic 3D scene generation from a single text prompt. 
+                            HyperPano makes several important design choices: 
+                            <b>1)</b> we argue that panoramas are a powerful prior to represent immersive 2D scenes and lift them into a 3D Gaussian representation to splat detailed 360-degree omnidirectional scenes;
+                            <b>2)</b> we leverage the advantages of both perspective images and panoramas captured by two different camera projection models. Our unique multi-view diffusion and panorama outpainting models are combined to generate a high-resolution panorama. 
+                            Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both quality and diversity. We believe that HyperPano holds promise for advancing 3D panoramic scene creation with numerous applications.
+                      
+                    </p>
+                </div>
+                <!-- <div class="col--md-6">
+                    <video class="img-fluid" loop autoplay muted>
+                        <source src="videos/teaser/teaser_twitter.mp4" />
+                    </video>
+                </div> -->
+            </div>
+            <br>
+        </div>    
+    </div>
+
+    <div class="container-fluid">
+        <div class="row py-5 mt-5 bg-dark">
+            <div class="col-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center pb-2 text-white">
+				  <b>Results</b>
+                </h1><br>
+
+                <script>
+                    activeMethodPill = "zipnerf"
+                    activeScenePill = document.querySelector('.scene-pill.active-pill');
+                    activeModePill = document.querySelector('.mode-pill.active-pill');
+                </script>
+                
+                <div class="text-center">
+                    <div class="video-container">
+                        <video class="video" style="height: 480px; max-width: 100%;" m id="compVideo0" loop playsinline autoplay muted>
+                            <source src="videos/results/rgb/bear.mp4" />
+                        </video>
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo1" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/depth/bear.mp4" />
+                        </video>
+                    </div>
+                    <div class="text-center" style="color: black;" id="mode-pills">
+                        <div class="btn-group btn-group-sm">
+                            <span class="btn btn-primary mode-pill active" data-value="rgb"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                RGB
+                            </span>
+                            <!-- <span class="btn btn-primary mode-pill" data-value="depth"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                Depth
+                            </span> -->
+                        </div>
+                    </div>
+
+
+                    <br>
+                    <p class="text-justify text-white" style="text-align: center;" id="prompt-box">A bear sitting in a classroom with a hat on, realistic, 4k image, high detail</p>
+                    <script>
+                        video0 = document.getElementById("compVideo0");
+                        video1 = document.getElementById("compVideo1");
+
+                        video0.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 0 && select){
+                                video0.play();
+                                // print video size
+                                console.log(video0.videoWidth, video0.videoHeight);
+                                video0.hidden = false;
+                                video1.hidden = true;
+                            }
+                        });
+
+                        video1.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 1 && select){
+                                video1.play();
+                                // print video size
+                                console.log(video1.videoWidth, video1.videoHeight);
+                                video0.hidden = true;
+                                video1.hidden = false;
+                            }
+                        });
+                    </script>
+
+                    <div class="pill-row scene-pills" id="scene-pills">
+                        <span class="pill scene-pill active" data-value="bear" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="panorama_4.png" alt="bear" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bedroom3" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bedroom3.png" alt="bedroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bust" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bust.png" alt="bust" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="boat" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/boat.jpg" alt="boat" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="lavender" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/lavender.png" alt="lavender" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="living_room" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/living_room.png" alt="living_room" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="piano" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/piano.jpg" alt="piano" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="resolute" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/resolute.png" alt="resolute" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="astronaut2" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/astronaut2.jpg" alt="astronaut" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="car" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/car.png" alt="car" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bathroom" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bathroom2.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="surf" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/surf.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="victorian" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/victorian.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="lighthouse" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/lighthouse.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="forest" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/forest.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="kitchen" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/kitchen.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="steampunk" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/steampunk.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="arcade" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/arcade.jpg" alt="bathroom" width="64">
+                        </span>
+                    </div>
+
+                    <script>
+                        activeMethodPill = document.querySelector('.method-pill.active-pill');
+                        activeScenePill = document.querySelector('.scene-pill.active-pill');
+                        activeModePill = document.querySelector('.mode-pill.active-pill');
+                    </script>
+                </div>
+
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+
+    <!-- <div class="container">
+        <div class="row py-2 mt-5 justify-content-center">
+            <div class="col-md-2"></div>
+            <div class="col-10 col-md-8">
+                <h1 class="text-center pb-5">
+                    <b>Method Overview</b>
+                </h1>
+                <img src="images/pipeline.png" class="img-fluid pb-3" alt="Explanation Overview">
+                <p class="text-justify">
+                    <h3 style="font-size: 18px; font-weight: normal;">
+
+                    <b>Overview of pipeline.</b> Our generation pipeline consists of two stages. In the panorama generation stage, we focus on synthesizing a high-quality panoramic image with multi-view diffusion, panorama outpainting model and SR module. 
+                    In the panoramic-3D-Gaussian-scene-construction stage, We optimize and fine-tune a 3D Gaussian panoramic scene from high-quality panorama for the better user immersive experience.                
+                    </h3>
+                </p>
+    
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div> -->
+
+
+    <div class="container-fluid bg-secondary text-white">
+        <div class="row py-5 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center h-100">
+                <h2 class=""><b> Method Overview</b></h2>
+                <img src="images/pipeline.png" class="img-fluid pb-3" alt="Explanation Overview">
+
+                <p class="text-justify pt-4">
+
+                    <b>Overview of pipeline.</b> Our generation pipeline consists of two stages. In the panorama generation stage, we focus on synthesizing a high-quality panoramic image with multi-view diffusion, panorama outpainting model and SR module. 
+                    In the panoramic-3D-Gaussian-scene-construction stage, We optimize and fine-tune a 3D Gaussian panoramic scene from high-quality panorama for the better user immersive experience.                
+                </p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row py-2 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <div class="row">
+                    <div class="col-4"> 
+                        <img class="img-fluid" src="thumbnails/gate.png" />
+                        <p class="text-center">Input Image</p>
+                    </div>
+                    <div class="col-8"> <!-- Adjust col-6 to your preference for smaller screens -->
+                        <video class="video img-fluid" loop autoplay muted>
+                            <source src="videos/single/gate.mp4" />
+                        </video>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="xkcd" style="font-size: 1.5em;">"A vibrant city avenue, bustling traffic, towering skyscrapers, cartoon style"</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2"></div>
+        </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- ##################################### videos/results/rgb/bear.mp4-->
+    <div class="desktop-content">
+        <div class="container-fluid"> <!-- Changed to container-fluid for full width -->
+          <div class="row py-5 align-item-center">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 text-center h-100">
+              <h2 class="fst-italic">Additional Results</h2>
+              <div class="gallery-container">
+                <span class="arrow arrow-left" onclick="scrollGallery(-300)">&#10094;</span>
+                <div class="gallery">
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>A backyard in a sunny day</p>
+                  </div>
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>A cozy living room</p>
+                  </div>
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>A cyberpunk city in the future</p>
+                  </div>
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>An anime style Japanese street</p>
+                  </div>
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>Additional video 1</p>
+                  </div>
+                  <div class="gallery-item">
+                    <video src="videos/results/rgb/bear.mp4" controls></video>
+                    <p>Additional video 2</p>
+                  </div>
+                  <!-- Add more videos as needed -->
+                </div>
+                <span class="arrow arrow-right" onclick="scrollGallery(300)">&#10095;</span>
+              </div>
+            </div>
+            <div class="col-md-1"></div>
+          </div>
+        </div>
+      </div>
+    
+      <script>
+        function scrollGallery(offset) {
+          const gallery = document.querySelector('.gallery');
+          gallery.scrollBy({
+            left: offset,
+            behavior: 'smooth'
+          });
+        }
+      </script>
+    <!-- ##################################### -->
+    <div class="container-fluid pt-5">
+        <div class="row py-5 mt-5 bg-customcustom">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center text-white pb-2"><b>Citation</b></h1>
+                <p class="text-white">
+                    <pre><code>
+                        <ul class="text-white">
+                            @InProceedings{wu2023hyperdreamer,
+                                author = {Tong Wu, Zhibing Li, Shuai Yang, Pan Zhang, Xingang Pan, Jiaqi Wang, Dahua Lin, Ziwei Liu},
+                                title = {HyperDreamer: Hyper-Realistic 3D Content Generation and Editing from a Single Image},
+                                journal={ACM SIGGRAPH Asia 2023 Conference Proceedings},
+                                year={2023}
+                            }
+                        </ul>
+                    </code></pre>
+                </p>
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+<!-- 
+    <div class="container-fluid pt-5">
+        <div class="row py-5 mt-5 bg-customcustom">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center text-white pb-2"><b>Citation</b></h1>
+
+                    <pre><code>
+                        <ul class="text-white">
+                            <h3 style="font-size: 18px; font-weight: normal;">
+
+                            @InProceedings{wu2023hyperdreamer,
+                                author = {Tong Wu, Zhibing Li, Shuai Yang, Pan Zhang, Xingang Pan, Jiaqi Wang, Dahua Lin, Ziwei Liu},
+                                title = {HyperDreamer: Hyper-Realistic 3D Content Generation and Editing from a Single Image},
+                                journal={ACM SIGGRAPH Asia 2023 Conference Proceedings},
+                                year={2023}
+                            }
+                        </h3>
+                        </ul>
+                    </code></pre>
+                  
+                    <div class="center-text">
+                        <!-- <a href="https://clustrmaps.com/site/1bzgi"  title="Visit tracker"><img src="//www.clustrmaps.com/map_v2.png?d=uVAj7gydWIyD0AQWR3NPboT8GvHlNvMR9cAYCUq58m0&cl=ffffff" /></a> -->
+                        <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=080808&w=300&t=tt&d=d6Vpq3KIn61IaMyX3K1e3cYlB--hsS2XorgAs89ixhQ&co=ffffff&cmo=24a3ed&cmn=ff5353&ct=171515'></script>
+                        </div>
+            <!-- <div class="col-md-2"></div> -->
+        </div>
+    </div> -->
+
+
+
+    <div class="container-fluid">
+        <div class="center-text">
+            <!-- <a href="https://clustrmaps.com/site/1bzgi"  title="Visit tracker"><img src="//www.clustrmaps.com/map_v2.png?d=uVAj7gydWIyD0AQWR3NPboT8GvHlNvMR9cAYCUq58m0&cl=ffffff" /></a> -->
+            <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=080808&w=300&t=tt&d=d6Vpq3KIn61IaMyX3K1e3cYlB--hsS2XorgAs89ixhQ&co=ffffff&cmo=24a3ed&cmn=ff5353&ct=171515'></script>
+            </div>
+    </div>
+</body>
+</html>
