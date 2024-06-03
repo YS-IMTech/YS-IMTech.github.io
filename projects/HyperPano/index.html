@@ -8,41 +8,53 @@
           font-family: Arial, sans-serif;
         }
         .gallery-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-          }
-          .gallery {
-            display: flex;
-            overflow-x: scroll;
-            scroll-behavior: smooth;
-            width: 80%;
-          }
-          .gallery-item {
-            min-width: 300px;
-            margin-right: 20px;
-          }
-          .arrow {
-            cursor: pointer;
-            font-size: 2em;
-            user-select: none;
-          }
-          .pagination-dots {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-          }
-          .pagination-dots span {
-            height: 10px;
-            width: 10px;
-            margin: 0 5px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-          }
-          .pagination-dots .active {
-            background-color: #717171;
-          }
+          position: relative;
+          width: 100%; /* Expand to full width */
+          margin: auto;
+        }
+        .gallery {
+          display: flex;
+          overflow-x: scroll;
+          scroll-behavior: smooth;
+          padding: 10px;
+          background-color: #f5f5f5;
+          scrollbar-width: none; /* Firefox */
+        }
+        .gallery::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+        .gallery-item {
+          flex: 0 0 calc(25% - 20px); /* Four items per row */
+          margin: 0 10px;
+          text-align: center;
+        }
+        .gallery-item video {
+          width: 100%;
+          height: auto;
+          cursor: pointer;
+        }
+        .gallery-item p {
+          margin-top: 5px;
+          font-size: 14px;
+        }
+        .arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 2rem;
+          cursor: pointer;
+          user-select: none;
+          z-index: 10;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+          padding: 10px;
+        }
+        .arrow-left {
+          left: 10px; /* Adjust as needed */
+        }
+        .arrow-right {
+          right: 10px; /* Adjust as needed */
+        }
         .authors {
             color: #ffffff; /* Dark blue color */
             font-weight: bold;
@@ -55,52 +67,7 @@
           .authors sup {
             color: #ffffff; /* Dark blue color for superscripts */
           }
-          
       </style>
-
-
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const gallery = document.querySelector('.gallery');
-          const dotsContainer = document.querySelector('.pagination-dots');
-          const items = gallery.children;
-          const itemsCount = items.length;
-    
-          function createDots() {
-            for (let i = 0; i < itemsCount; i++) {
-              const dot = document.createElement('span');
-              dot.classList.add('dot');
-              if (i === 0) dot.classList.add('active');
-              dotsContainer.appendChild(dot);
-            }
-          }
-    
-          function updateDots() {
-            const dots = dotsContainer.children;
-            const scrollLeft = gallery.scrollLeft;
-            const itemWidth = gallery.scrollWidth / itemsCount;
-            const index = Math.round(scrollLeft / itemWidth);
-    
-            for (let i = 0; i < dots.length; i++) {
-              dots[i].classList.remove('active');
-            }
-            dots[index].classList.add('active');
-          }
-    
-          gallery.addEventListener('scroll', updateDots);
-          createDots();
-        });
-    
-        function scrollGallery(offset) {
-          const gallery = document.querySelector('.gallery');
-          gallery.scrollBy({
-            left: offset,
-            behavior: 'smooth'
-          });
-        }
-      </script>
-
-
     <!-- ################################################ -->
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -575,7 +542,7 @@
 
     <!-- ##################################### videos/results/rgb/bear.mp4-->
     <div class="desktop-content">
-        <div class="container-fluid">
+        <div class="container-fluid"> <!-- Changed to container-fluid for full width -->
           <div class="row py-5 align-item-center">
             <div class="col-md-1"></div>
             <div class="col-md-10 text-center h-100">
@@ -611,12 +578,21 @@
                 </div>
                 <span class="arrow arrow-right" onclick="scrollGallery(300)">&#10095;</span>
               </div>
-              <div class="pagination-dots"></div>
             </div>
             <div class="col-md-1"></div>
           </div>
         </div>
       </div>
+    
+      <script>
+        function scrollGallery(offset) {
+          const gallery = document.querySelector('.gallery');
+          gallery.scrollBy({
+            left: offset,
+            behavior: 'smooth'
+          });
+        }
+      </script>
     <!-- ##################################### -->
     <div class="container-fluid pt-5">
         <div class="row py-5 mt-5 bg-customcustom">
