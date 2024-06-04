@@ -83,6 +83,20 @@
           .authors sup {
             color: #ffffff; /* Dark blue color for superscripts */
           }
+
+          .image-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            text-align: center;
+        }
+        img {
+            display: none;
+            max-width: 100%;
+            height: auto;
+        }
+
+
       </style>
 
       <script>
@@ -413,34 +427,56 @@
                 <div class="text-center">
                     <div class="video-container">
                         <video class="video" style="height: 480px; max-width: 100%;" m id="compVideo0" loop playsinline autoplay muted>
-                            <source src="videos/results/rgb/bear.mp4" />
+                            <source src="videos/results/0/c22.mp4" />
                         </video>
                         <video class="video" style="height: 480px; max-width: 100%;" id="compVideo1" loop playsinline autoplay muted hidden>
-                            <source src="videos/results/depth/bear.mp4" />
+                            <source src="videos/results/-30/c22.mp4" />
                         </video>
+
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo2" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/30/c22.mp4" />
+                        </video>
+
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo3" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/60/c22.mp4" />
+                        </video>
+
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo3" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/pano/c22.png" />
+                        </video>
+
+                        <!-- <img id="image0" src="videos/results/pano/c22.png" alt="Image 0"> -->
+
+
+
+
+
                     </div>
                     <div class="text-center" style="color: black;" id="mode-pills">
                         <div class="btn-group btn-group-sm">
-                            <span class="btn btn-primary mode-pill active" data-value="rgb"
-                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
-                                -30°
-                            </span>
-                            <span class="btn btn-primary mode-pill active" data-value="rgb"
+
+                            <span class="btn btn-primary mode-pill active" data-value="0"
                                 onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
                                 0°
                             </span>
-                            <span class="btn btn-primary mode-pill active" data-value="rgb"
+
+                            <span class="btn btn-primary mode-pill active" data-value="-30"
+                            onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                            -30°
+                            </span>
+
+                            <span class="btn btn-primary mode-pill active" data-value="30"
                             onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
                             30°
                             </span>
-                            <span class="btn btn-primary mode-pill active" data-value="depth"
+                            <span class="btn btn-primary mode-pill active" data-value="60"
                             onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
                             60°
                             </span>
-                            <!-- <span class="btn btn-primary mode-pill" data-value="depth"
+                            <span class="btn btn-primary mode-pill" data-value="pano"
                                 onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
-                                Depth
-                            </span> -->
+                                Panorama
+                            </span>
                         </div>
                     </div>
 
@@ -450,6 +486,8 @@
                     <script>
                         video0 = document.getElementById("compVideo0");
                         video1 = document.getElementById("compVideo1");
+                        video2 = document.getElementById("compVideo2");
+                        video3 = document.getElementById("compVideo3");
 
                         video0.addEventListener('loadedmetadata', function() {
                             if (activeVidID == 0 && select){
@@ -458,6 +496,8 @@
                                 console.log(video0.videoWidth, video0.videoHeight);
                                 video0.hidden = false;
                                 video1.hidden = true;
+                                video2.hidden = true;
+                                video3.hidden = true;
                             }
                         });
 
@@ -468,64 +508,98 @@
                                 console.log(video1.videoWidth, video1.videoHeight);
                                 video0.hidden = true;
                                 video1.hidden = false;
+                                video2.hidden = true;
+                                video3.hidden = true;
+                            }
+                        });
+
+                        video2.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 1 && select){
+                                video2.play();
+                                // print video size
+                                console.log(video2.videoWidth, video2.videoHeight);
+                                video0.hidden = true;
+                                video1.hidden = true;
+                                video2.hidden = false;
+                                video3.hidden = true;
+                            }
+                        });
+
+                        video3.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 1 && select){
+                                video3.play();
+                                // print video size
+                                console.log(video3.videoWidth, video3.videoHeight);
+                                video0.hidden = true;
+                                video1.hidden = true;
+                                video2.hidden = true;
+                                video3.hidden = false;
                             }
                         });
                     </script>
 
                     <div class="pill-row scene-pills" id="scene-pills">
-                        <span class="pill scene-pill active" data-value="bear" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="panorama_4.png" alt="bear" width="64">
+                        <span class="pill scene-pill active" data-value="c22" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c22.png" alt="c22" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="bedroom3" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/bedroom3.png" alt="bedroom" width="64">
+                        
+                        <span class="pill scene-pill" data-value="c7" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c7.png" alt="c7" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="bust" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/bust.png" alt="bust" width="64">
+                        <span class="pill scene-pill" data-value="c8" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c8.png" alt="c8" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="boat" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/boat.jpg" alt="boat" width="64">
+                        <span class="pill scene-pill" data-value="c10" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c10.png" alt="c10" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="lavender" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/lavender.png" alt="lavender" width="64">
+                        <span class="pill scene-pill" data-value="c12" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c12.png" alt="c12" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="living_room" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/living_room.png" alt="living_room" width="64">
+                        <span class="pill scene-pill" data-value="c21" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c21.png" alt="c21" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="piano" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/piano.jpg" alt="piano" width="64">
+                        <span class="pill scene-pill" data-value="c22" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c22.png" alt="c22" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="resolute" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/resolute.png" alt="resolute" width="64">
+                        <span class="pill scene-pill" data-value="c25" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/c25.png" alt="c25" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="astronaut2" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/astronaut2.jpg" alt="astronaut" width="64">
+
+                        <span class="pill scene-pill" data-value="l1" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/l1.png" alt="l1" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="car" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/car.png" alt="car" width="64">
+
+                        <span class="pill scene-pill" data-value="d1" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/d1.png" alt="d1" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="bathroom" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/bathroom2.png" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="d3" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/d3.png" alt="d3" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="surf" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/surf.png" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="d6" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/d6.png" alt="d6" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="victorian" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/victorian.jpg" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="hv6" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/hv6.png" alt="hv6" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="lighthouse" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/lighthouse.png" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="hv8" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/hv8.png" alt="hv8" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="forest" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/forest.jpg" alt="bathroom" width="64">
+                        
+                        <span class="pill scene-pill" data-value="a2" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/a2.png" alt="a2" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="kitchen" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/kitchen.png" alt="bathroom" width="64">
+
+                        <span class="pill scene-pill" data-value="l15" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/l15.png" alt="l15" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="steampunk" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/steampunk.jpg" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="v1" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/v1.png" alt="v1" width="64">
                         </span>
-                        <span class="pill scene-pill" data-value="arcade" onclick="selectCompVideo(activeMethodPill, this, 3)">
-                            <img class="thumbnail-img" src="thumbnails/arcade.jpg" alt="bathroom" width="64">
+                        <span class="pill scene-pill" data-value="v2" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/v2.png" alt="v2" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="v6" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano/v6.png" alt="v6" width="64">
                         </span>
                     </div>
 
