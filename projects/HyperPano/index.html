@@ -9,50 +9,52 @@
         }
         .gallery-container {
             position: relative;
-            overflow: hidden;
-            max-width: 100%;
-        }
-        
-        .gallery {
+            width: 100%; /* Expand to full width */
+            margin: auto;
+          }
+          .gallery {
             display: flex;
             overflow-x: scroll;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
             padding: 10px;
-            box-sizing: border-box;
-        }
-        
-        .gallery-item {
-            min-width: 250px;
-            flex-shrink: 0;
-            margin: 10px;
-        }
-        
-        .arrow {
+            background-color: #f5f5f5;
+            scrollbar-width: none; /* Firefox */
+          }
+          .gallery::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+          }
+          .gallery-item {
+            flex: 0 0 calc(25% - 20px); /* Four items per row */
+            margin: 0 10px;
+            text-align: center;
+          }
+          .gallery-item video {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+          }
+          .gallery-item p {
+            margin-top: 5px;
+            font-size: 14px;
+          }
+          .arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.8);
-            border: none;
+            font-size: 2rem;
             cursor: pointer;
+            user-select: none;
             z-index: 10;
-            font-size: 24px;
-        }
-        
-        .arrow-left {
-            left: 10px;
-        }
-        
-        .arrow-right {
-            right: 10px;
-        }
-        
-        /* Ensure responsiveness */
-        @media (max-width: 768px) {
-            .gallery-item {
-                min-width: 150px;
-            }
-        }
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            padding: 10px;
+          }
+          .arrow-left {
+            left: 10px; /* Adjust as needed */
+          }
+          .arrow-right {
+            right: 10px; /* Adjust as needed */
+          }
           .pagination-dots {
             display: flex;
             justify-content: center;
@@ -114,74 +116,16 @@
           gallery.addEventListener('scroll', updateDots);
           createDots();
         });
-
-        function scrollGallery(amount) {
-            const gallery = document.querySelector('.gallery');
-            gallery.scrollBy({ left: amount, behavior: 'smooth' });
+    
+        function scrollGallery(offset) {
+          const gallery = document.querySelector('.gallery');
+          gallery.scrollBy({
+            left: offset,
+            behavior: 'smooth'
+          });
         }
-
-
-
       </script>
-<!--     
-      .gallery-container {
-        position: relative;
-        width: 100%; /* Expand to full width */
-        margin: auto;
-      }
-      .gallery {
-        display: flex;
-        overflow-x: scroll;
-        scroll-behavior: smooth;
-        padding: 10px;
-        background-color: #f5f5f5;
-        scrollbar-width: none; /* Firefox */
-      }
-      .gallery::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Opera */
-      }
-      .gallery-item {
-        flex: 0 0 calc(25% - 20px); /* Four items per row */
-        margin: 0 10px;
-        text-align: center;
-      }
-      .gallery-item video {
-        width: 100%;
-        height: auto;
-        cursor: pointer;
-      }
-      .gallery-item p {
-        margin-top: 5px;
-        font-size: 14px;
-      }
-      .arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 2rem;
-        cursor: pointer;
-        user-select: none;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        padding: 10px;
-      }
-      .arrow-left {
-        left: 10px; /* Adjust as needed */
-      }
-      .arrow-right {
-        right: 10px; /* Adjust as needed */
-      } -->
-
-
-      <!-- function scrollGallery(offset) {
-        const gallery = document.querySelector('.gallery');
-        gallery.scrollBy({
-          left: offset,
-          behavior: 'smooth'
-        });
-      } -->
-
+    
     <!-- ################################################ -->
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -666,7 +610,7 @@
 
 
     <!-- ##################################### videos/results/rgb/bear.mp4-->
-    <div class="desktop-content">
+    <!-- <div class="desktop-content"> -->
         <div class="container-fluid">
           <div class="row py-5 align-item-center">
             <div class="col-md-1"></div>
@@ -769,7 +713,7 @@
             <div class="col-md-1"></div>
           </div>
         </div>
-      </div>
+      <!-- </div> -->
     <!-- ##################################### -->
     <div class="container-fluid pt-5">
         <div class="row py-5 mt-5 bg-customcustom">
