@@ -116,16 +116,16 @@
             dots[index].classList.add('active');
           }
     
-          gallery.addEventListener('scroll', updateDots);
-          createDots();
+        //   gallery.addEventListener('scroll', updateDots);
+        //   createDots();
         });
     
-        function scrollGallery(offset) {
-          const gallery = document.querySelector('.gallery');
-          gallery.scrollBy({
-            left: offset,
+        function scrollGallery(galleryId, distance) {
+            const gallery = document.getElementById(galleryId);
+            gallery.scrollBy({
+            left: distance,
             behavior: 'smooth'
-          });
+            });
         }
       </script>
     
@@ -354,9 +354,12 @@
 
                 <div class="col-md-7">
 
-                    <div style="position:relative;padding-top:56.25%;">
+                    <!-- <div style="position:relative;padding-top:56.25%;">
                         <iframe width="560" height="315" src="https://www.youtube.com/embed/dXvoFRbHOiw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
-                      </div>
+                      </div> -->
+                      <video class="video img-fluid" loop autoplay muted>
+                        <source src="videos/web_case_video.mp4" />
+                    </video>
 
                 </div>
             </div>
@@ -375,15 +378,14 @@
                         <b>Abstract</b>
                     </h1>
                     <p class="text-justify">
-
-                        3D immersive scene generation is a challenging yet critical task in computer vision and graphics.  A desired virtual 3D scene should <b>1)</b> exhibit omnidirectional view consistency, and <b>2)</b> allow for free exploration in complex scene hierarchies.  Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FoV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies.                        
-                        To tackle these challenges, we introduce <strong><em>LayerPano3D </em></strong>, a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt.
-                        Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior.
-                        LayerPano3D comprises multiple dedicated designs:
-                        <b>1)</b> we introduce a novel text-guided anchor view synthesis pipeline for high-quality, consistent panorama generation.
-                        <b>2)</b> We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths.
-                        Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both full view consistency and immersive exploratory experience. We believe that <strong><em>LayerPano3D </em></strong> holds promise for advancing 3D panoramic scene creation with numerous applications.
-                      
+                      3D immersive scene generation is a challenging yet critical task in computer vision and graphics.  A desired virtual 3D scene should <b>1)</b> exhibit omnidirectional view consistency, and <b>2)</b> allow for free exploration in complex scene hierarchies.  Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FoV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies.                        
+                      To tackle these challenges, we introduce <strong><em>LayerPano3D </em></strong>, a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt.
+                      Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior.
+                      LayerPano3D comprises multiple dedicated designs:
+                      <b>1)</b> we introduce a novel text-guided anchor view synthesis pipeline for high-quality, consistent panorama generation.
+                      <b>2)</b> We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths.
+                      Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both full view consistency and immersive exploratory experience. We believe that <strong><em>LayerPano3D </em></strong> holds promise for advancing 3D panoramic scene creation with numerous applications.
+                    
                     </p>
                 </div>
 
@@ -404,9 +406,9 @@
                         <img class="img-fluid" src="thumbnails/gate.png" />
                         <p class="text-center">Input Image</p>
                     </div> -->
-                    <video class="video img-fluid" loop autoplay muted>
-                        <source src="videos/web_case_video.mp4" />
-                    </video>
+                    <div style="position:relative;padding-top:56.25%;">
+                      <iframe width="560" height="315" src="https://www.youtube.com/embed/dXvoFRbHOiw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                    </div>
                 </div>
 
             </div>
@@ -417,10 +419,10 @@
 
 
     <div class="container-fluid">
-        <div class="row py-5 mt-5 bg-dark">
+        <div class="row py-5  bg-dark">
             <div class="col-2"></div>
             <div class="col-md-8">
-                <h1 class="text-center pb-2 text-white">
+                <h1 class="text-center pb-3 text-white">
 				  <b>Gallery</b>
                 </h1><br>
 
@@ -658,19 +660,21 @@
 
     <!-- ##################################### videos/results/rgb/bear.mp4-->
         <div class="container-fluid">
-          <div class="row py-5 align-item-center">
+          <div class="row py-3 align-item-center">
             <div class="col-md-1"></div>
             <div class="col-md-10 text-center h-100">
-            <h2 class=""><b>Additional 2D Panorama Results</b></h2>
+            <h2 class=""><b>Additional Results in 2D Panorama </b></h2>
 
               <!-- <h2 class="fst-italic">Additional Results</h2> -->
               <div class="gallery-container">
-                <span class="arrow arrow-left" onclick="scrollGallery(-300)">&#10094;</span>
-                <div class="gallery">
+                <span class="arrow arrow-left" onclick="scrollGallery('gallery1', -300)">&#10094;</span>
+                <div id="gallery1" class="gallery">
+
                   <div class="gallery-item">
-                    <video src="videos/results/outputs/a1.mp4" controls></video>
-                    <p>Aurora Borealis, night sky with vibrant hues of green and blue, black and white color ink painting</p>
+                    <video src="videos/results/outputs/fo6.mp4" controls></video>
+                    <p>A dense forest with a lake and a waterfall, oil painting</p>
                   </div>
+
                   <div class="gallery-item">
                     <video src="videos/results/outputs/a5.mp4" controls></video>
                     <p>Aurora Borealis, night sky with vibrant hues of green and blue, rugged coastal, solitary peak, Vincent van Gogh</p>
@@ -683,6 +687,12 @@
                     <video src="videos/results/outputs/c6.mp4" controls></video>
                     <p>Bustling city street at sunset, skyscrapers, streets, cars, cartoon</p>
                   </div>
+
+                  <div class="gallery-item">
+                    <video src="videos/results/outputs/c21.mp4" controls></video>
+                    <p>A vibrant city avenue, bustling traffic, towering skyscrapers, Ukiyo-e painting</p>
+                  </div>
+
                   <div class="gallery-item">
                     <video src="videos/results/outputs/c9.mp4" controls></video>
                     <p>A vibrant city avenue, bustling traffic, towering skyscrapers, DSLR 35mm Landscape</p>
@@ -697,11 +707,6 @@
                     <p>A dynamic metropolitan avenue, packed with traffic, and flanked by majestic skyscrapers, oil painting</p>
                   </div>
 
-
-                  <div class="gallery-item">
-                    <video src="videos/results/outputs/c21.mp4" controls></video>
-                    <p>A vibrant city avenue, bustling traffic, towering skyscrapers, Ukiyo-e painting</p>
-                  </div>
 
 
 
@@ -726,16 +731,19 @@
                     <p>A dense forest with a lake and a waterfall, DSLR 35mm Landscape</p>
                   </div>
 
-                  
-                  <div class="gallery-item">
-                    <video src="videos/results/outputs/fo6.mp4" controls></video>
-                    <p>A dense forest with a lake and a waterfall, oil painting</p>
-                  </div>
-
                   <div class="gallery-item">
                     <video src="videos/results/outputs/l2.mp4" controls></video>
                     <p>A tranquil dusk scene, serene lake, distant mountains, setting sun, DSLR 35mm Landscape </p>
                   </div>
+                  
+
+
+                  <div class="gallery-item">
+                    <video src="videos/results/outputs/a1.mp4" controls></video>
+                    <p>Aurora Borealis, night sky with vibrant hues of green and blue, black and white color ink painting</p>
+                  </div>
+
+
 
                   <div class="gallery-item">
                     <video src="videos/results/outputs/l6.mp4" controls></video>
@@ -752,11 +760,10 @@
 
                   <!-- Add more videos as needed -->
                 </div>
-                <span class="arrow arrow-right" onclick="scrollGallery(300)">&#10095;</span>
-              </div>
+                <span class="arrow arrow-right" onclick="scrollGallery('gallery1', 300)">&#10095;</span>
+            </div>
               <div class="pagination-dots"></div>
             </div>
-            <div class="col-md-1"></div>
           </div>
         </div>
 
@@ -765,12 +772,89 @@
 
 
 
+    <!-- ##################################### videos/results/rgb/bear.mp4-->
+    <div class="container-fluid">
+        <div class="row py-3 align-item-center">
+          <div class="col-md-1"></div>
+          <div class="col-md-10 text-center h-100">
+          <h2 class=""><b>Additional Results in Multi-Layer 3D Representation</b></h2>
+
+            <!-- <h2 class="fst-italic">Additional Results</h2> -->
+            <div class="gallery-container">
+                <span class="arrow arrow-left" onclick="scrollGallery('gallery2', -300)">&#10094;</span>
+
+              <div id="gallery2" class="gallery">
+
+                <div class="gallery-item">
+                  <video src="videos/results/3d/stones.mp4" controls></video>
+                </div>
+
+                <div class="gallery-item">
+                    <video src="videos/results/3d/generated6.mp4" controls></video>
+                  </div>
+
+                <div class="gallery-item">
+                    <video src="videos/results/3d/generated3.mp4" controls></video>
+                  </div>
+
+                  <div class="gallery-item">
+                    <video src="videos/results/3d/cafeterras.mp4" controls></video>
+                  </div>
+  
+
+                  <div class="gallery-item">
+                    <video src="videos/results/3d/florence.mp4" controls></video>
+                  </div>
+
+              
+
+                  <div class="gallery-item">
+                    <video src="videos/results/3d/generated4.mp4" controls></video>
+                  </div>
+                  
+                  <div class="gallery-item">
+                    <video src="videos/results/3d/corot_bridge.mp4" controls></video>
+                  </div>
+
+                    <div class="gallery-item">
+                      <video src="videos/results/3d/generated10.mp4" controls></video>
+                    </div>
+
+                    <div class="gallery-item">
+                        <video src="videos/results/3d/generated12.mp4" controls></video>
+                      </div>
+      
+                      <div class="gallery-item">
+                          <video src="videos/results/3d/italy_street.mp4" controls></video>
+                        </div>
+      
+
+                        <div class="gallery-item">
+                          <video src="videos/results/3d/budapest.mp4" controls></video>
+                        </div>
+      
+                        <div class="gallery-item">
+                            <video src="videos/results/3d/window5.mp4" controls></video>
+                          </div>
+
+
+
+                <!-- Add more videos as needed -->
+              </div>
+              <span class="arrow arrow-right" onclick="scrollGallery('gallery2', 300)">&#10095;</span>
+            </div>
+            <div class="pagination-dots"></div>
+          </div>
+        </div>
+      </div>
 
 
 
 
 
 
+
+        
 
 
 
