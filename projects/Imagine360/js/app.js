@@ -62,8 +62,8 @@ function selectCompVideo(methodPill, scenePill, n_views, modePill) {
         case 'a man standing on a hill overlooking a stunning mountain lake':
             promptTextBox.text("A man standing on a hill overlooking a stunning mountain lake.");
             break;
-        case 'a red cable car on a snowy mountain, with a beautiful sunset in the background':
-            promptTextBox.text("A red cable car on a snowy mountain, with a beautiful sunset in the background.");
+        case 'a red gondola lift in a mountainous region, with a beautiful sunset in the background':
+            promptTextBox.text("A red gondola lift in a mountainous region, with a beautiful sunset in the background.");
             break;
         case 'a red car driving down a country road with a grassy field on the side':
             promptTextBox.text("A red car driving down a country road with a grassy field on the side");
