@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .gallery-container {
+            position: relative;
+            width: 100%; /* Expand to full width */
+            margin: auto;
+          }
+          .gallery {
+            display: flex;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            padding: 10px;
+            background-color: #f5f5f5;
+            scrollbar-width: none; /* Firefox */
+          }
+          .gallery::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+          }
+          .gallery-item {
+            flex: 0 0 calc(25% - 20px); /* Four items per row */
+            margin: 0 10px;
+            text-align: center;
+          }
+          .gallery-item video {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+          }
+          .gallery-item p {
+            margin-top: 5px;
+            font-size: 14px;
+          }
+          .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            padding: 10px;
+          }
+          .arrow-left {
+            left: 10px; /* Adjust as needed */
+          }
+          .arrow-right {
+            right: 10px; /* Adjust as needed */
+          }
+          .pagination-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+          }
+          .pagination-dots span {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+          }
+          .pagination-dots .active {
+            background-color: #717171;
+          }
+        .authors {
+            color: #ffffff; /* Dark blue color */
+            font-weight: bold;
+            font-size: 1.25rem; /* Adjust font size if necessary */
+          }
+          .authors a {
+            color: #b6e0f8cb; /* Dark blue color for links */
+            text-decoration: none; /* Optional: remove underline from links */
+          }
+          .authors sup {
+            color: #99b6d8; /* Dark blue color for superscripts */
+          }
+          video { 
+            height: auto; 
+        }
+
+
+
+    </style>
+    
+    <!-- reset css  -->
+    <link href="css/vrcss/reset.css" rel="stylesheet" />
+
+    <link href="css/vrcss/index.css" rel="stylesheet" />
+
+    <script src="css/vrcss/index.js" defer></script>
+
+    <script src="css/vrcss/aframe.min.js" defer></script>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const gallery = document.querySelector('.gallery');
+          const dotsContainer = document.querySelector('.pagination-dots');
+          const items = gallery.children;
+          const itemsCount = items.length;
+    
+          function createDots() {
+            for (let i = 0; i < itemsCount; i++) {
+              const dot = document.createElement('span');
+              dot.classList.add('dot');
+              if (i === 0) dot.classList.add('active');
+              dotsContainer.appendChild(dot);
+            }
+          }
+    
+          function updateDots() {
+            const dots = dotsContainer.children;
+            const scrollLeft = gallery.scrollLeft;
+            const itemWidth = gallery.scrollWidth / itemsCount;
+            const index = Math.round(scrollLeft / itemWidth);
+    
+            for (let i = 0; i < dots.length; i++) {
+              dots[i].classList.remove('active');
+            }
+            dots[index].classList.add('active');
+          }
+    
+
+        });
+    
+        function scrollGallery(galleryId, distance) {
+            const gallery = document.getElementById(galleryId);
+            gallery.scrollBy({
+            left: distance,
+            behavior: 'smooth'
+            });
+        }
+      </script>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Imagine360: Immersive 360 Video Generation from Perspective Anchor</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="images/teaser.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1711">
+    <meta property="og:image:height" content="576">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ys-imtech.github.io/projects/Imagine360/"/>
+    <meta property="og:title" content="Imagine360: Immersive 360 Video Generation from Perspective Anchor" />
+    <meta property="og:description" content="Imagine360 lifts standard perspective video into 360◦ video, enabling dynamic scene exploration from full 360 degrees.“
+    ."/>
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Imagine360: Immersive 360 Video Generation from Perspective Anchor" />
+    <meta name="twitter:description" content="Imagine360 lifts standard perspective video into 360◦ video, enabling dynamic scene exploration from full 360 degrees."/>
+    <meta name="twitter:image" content="images/teaser.png" />
+
+<link rel="icon" href="images/icon.png">
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/fontawesome.all.min.css">
+	<link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+	<script defer src="js/fontawesome.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/synced_video_selector.js"></script>
+
+</head>
+
+<body style="padding: 0%; width: 100%">
+    <div class="desktop-content">
+    <div class="video-background" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="videos/teaser/teaser.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="flex-center-container"> <!-- New container for flexbox centering -->
+            <div class="content">
+                <!-- <h1 style="font-size: 48px;"><b>Imagine360: Immersive 360 Video Generation from Perspective Anchor</b></h1> -->
+                <h1 style="font-size: 2.5vw;"><b>Imagine360: Immersive 360 Video Generation from Perspective Anchor</b></h1>
+
+                <p class="title is-5 mt-2 authors"> 
+                    <a href="https://sparkstj.github.io/" target="_blank">Jing Tan</a><sup>1*</sup>, 
+                    <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>2,4*</sup>, 
+
+                    <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>1</sup>&#9993, 
+                    <a href="https://github.com/hejingwenhejingwen" target="_blank">Jingwen He</a><sup>1</sup>, 
+
+                    <a href="https://guoyww.github.io/" target="_blank">Yuwei Guo</a><sup>1</sup>,
+                    <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>3</sup>,
+                    <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>1,4</sup>&#9993
+              
+                  </p>
+                  <!-- affiliations -->
+                  <p class="subtitle is-5"> 
+                    <sup>1</sup> The Chinese University of Hong Kong, 
+                    <sup>2</sup> Shanghai Jiao Tong University, 
+                    <!-- <br> -->
+                    <sup>3</sup> S-Lab, Nanyang Technological University
+                    <sup>4</sup> Shanghai AI Laboratory,
+                  </p>
+
+                  <div class="row justify-content-center">
+                    <div class="col-12 h3">
+                        <a href="https://arxiv.org/abs/2412.03552" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                        <a href="https://www.youtube.com/watch?v=gRGo4B41GXY" class="btn btn-outline-light" role="button" style="font-size: 20px;" >Youtube</a>
+                        <a href="https://github.com/YS-IMTech/Imagine360" class="btn btn-outline-light" role="button" style="font-size: 20px;">Code</a>
+                    </div>
+                </div>
+
+                <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <div class="mobile-content">
+        <div class="container-fluid h-100 h-md-100 w-100 d-flex flex-column justify-content-center text-center my-5" style="height:100vh;">
+            <div class="row justify-content-center mb-3 order-md-first">
+                <div class="col-12">
+
+                    
+                  <video class="img-fluid pb-3" loop autoplay muted controls>
+                    <source src="videos/demo_video.mp4" />
+                </video>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var video = document.getElementById('myVideo');
+    
+                        function isMobileDevice() {
+                            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+                        };
+    
+                        if (!isMobileDevice()) {
+                            setTimeout(function() {
+                                video.setAttribute('controls', '');
+                            }, 1500); // 2000 milliseconds = 2 seconds
+                        } else {
+                            video.setAttribute('controls', '');
+                        }
+                    });
+                    </script>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                    <h2><b>Imagine360</b>: Immersive 360 Video <br/> Generation from Perspective Anchor</h2>
+                </div>
+
+                <p class="title is-5 mt-2 authors"> 
+                  <a href="https://sparkstj.github.io/" target="_blank">Jing Tan</a><sup>1,4*</sup>, 
+                  <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>2,4*</sup>, 
+
+                  <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>1,4</sup>&#9993, 
+                  <a href="https://github.com/hejingwenhejingwen" target="_blank">Jingwen He</a><sup>1</sup>, 
+
+                  <a href="https://guoyww.github.io/" target="_blank">Yuwei Guo</a><sup>1</sup>,
+                  <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>3,4</sup>,
+                  <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>1,4</sup>&#9993
+            
+                </p>
+                <!-- affiliations -->
+                <p class="subtitle is-5"> 
+                  <sup>1</sup> The Chinese University of Hong Kong, 
+                  <sup>2</sup> Shanghai Jiao Tong University, 
+                  <!-- <br> -->
+                  <sup>3</sup> S-Lab, Nanyang Technological University
+                  <sup>4</sup> Shanghai AI Laboratory,
+                </p>
+
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-12 h3">                        
+                  <a href="https://arxiv.org/abs/2412.03552" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                  <a href="https://www.youtube.com/watch?v=gRGo4B41GXY" class="btn btn-light" role="button" style="font-size: 20px;" >Youtube</a>
+                  <a href="https://github.com/YS-IMTech/Imagine360" class="btn btn-light" role="button" style="font-size: 20px;">Code</a>
+              </div>
+          </div>
+        </div>
+    
+        <div class="video-background">
+            <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                <source src="videos/teaser/teaser.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+            <div class="flex-center-container"> 
+                <div class="content">
+                    <h1>We generate Hyper-Immersive Panoramic Video</h1>
+                    <h3>from a single perspective anchor</h3>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+
+
+    <div class="desktop-content">
+        <div class="container-fluid px-5" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-5">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify px-5">
+                        <h3 style="font-size: 18px; font-weight: normal;">
+
+                          360° videos offer a hyper-immersive experience that allows the viewers to explore a dynamic scene from full 360 degrees. 
+                          To achieve more user-friendly and personalized content creation in 360° video format, we seek to lift standard perspective videos into 360° equirectangular videos. To this end, we introduce <b>Imagine360</b>, the first perspective-to-360° video generation framework that creates high-quality 360° videos with rich and diverse motion patterns from video-based control.
+                          Imagine360 learns fine-grained spherical visual and motion patterns from limited 360° video data with several key designs. 
+                          <b>1)</b> Firstly we adopt the dual-branch design, including a perspective and a panorama video denoising branch to provide local and global constraints for 360° video generation, with motion module and spatial LoRA layers fine-tuned on extended web 360° videos.
+                          <b>2)</b>Additionally, an antipodal mask is devised to capture long-range motion dependencies, enhancing the reversed camera motion between antipodal pixels across hemispheres.
+                          <b>3)</b> To handle general perspective video inputs, we propose elevation-aware designs that adapt to varying video masking due to changing elevations across frames.
+                          Extensive experiments show Imagine360 achieves superior graphics quality and motion coherence among state-of-the-art 360° video generation methods. We believe Imagine360 holds promise for advancing personalized, immersive 360° video creation.
+
+                    </h3>
+
+                    </p>
+                </div>
+
+                <div class="col-md-7">
+
+
+                  <video class="img-fluid pb-3" loop autoplay muted controls>
+                    <source src="videos/demo_video.mp4" />
+                </video>
+
+
+                </div>
+            </div>
+            <br>
+        </div>  
+        
+
+    </div>
+
+    <div class="mobile-content">
+        <div class="container" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-6">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify">
+
+                      360° videos offer a hyper-immersive experience that allows the viewers to explore a dynamic scene from full 360 degrees. 
+                      To achieve more user-friendly and personalized content creation in 360° video format, we seek to lift standard perspective videos into 360° equirectangular videos. To this end, we introduce <b>Imagine360</b>, the first perspective-to-360° video generation framework that creates high-quality 360° videos with rich and diverse motion patterns from video-based control.
+                      Imagine360 learns fine-grained spherical visual and motion patterns from limited 360° video data with several key designs. 
+                      <b>1)</b> Firstly we adopt the dual-branch design, including a perspective and a panorama video denoising branch to provide local and global constraints for 360° video generation, with motion module and spatial LoRA layers fine-tuned on extended web 360° videos.
+                      <b>2)</b>Additionally, an antipodal mask is devised to capture long-range motion dependencies, enhancing the reversed camera motion between antipodal pixels across hemispheres.
+                      <b>3)</b> To handle general perspective video inputs, we propose elevation-aware designs that adapt to varying video masking due to changing elevations across frames.
+                      Extensive experiments show Imagine360 achieves superior graphics quality and motion coherence among state-of-the-art 360° video generation methods. We believe Imagine360 holds promise for advancing personalized, immersive 360° video creation.
+
+                    </p>
+                </div>
+
+            </div>
+            <br>
+        </div>    
+    </div>
+
+
+
+    <div class="container-fluid">
+      <div class="row py-5  bg-dark">
+          <div class="col-2"></div>
+          <div class="col-md-8">
+              <h1 class="text-center pb-3 text-white">
+                <b>Gallery <span class="small-text">(click below pano videos to open VR mode)</span></b>
+
+              </h1>
+              <p class="text-center small-text" style="color: red; font-weight: bold;"> 
+                We highly recommend using a mobile phone to access the website(better use Chrome browser) for device motion tracking, enhancing the immersive quality of the VR interactive experience.             </p>
+              </p>
+              
+              <p class="text-center small-text" style="color: yellow; font-weight: bold;"> 
+                NOTE: The Loading may be a little slow, but your wait will be worth it !!!           </p>
+              </p>
+
+              <script>
+                  activeMethodPill = "zipnerf"
+                  activeScenePill = document.querySelector('.scene-pill.active-pill');
+                  activeModePill = document.querySelector('.mode-pill.active-pill');
+              </script>
+              
+              <div class="text-center">
+                  <div class="video-container">
+
+                    <div class="video">
+                      <video class="video" style="width: 100%; max-width: 100%;" id="compVideo0" loop playsinline autoplay muted>
+                          <source data-src="videos/results/PANO VIDEO/a city street covered in snow with cherry blossom trees lining the sidewalks.mp4">
+                      </video>
+                  </div>
+
+
+                  
+                  <video class="video" style="width: 100%; max-width: 100%; display: none;" id="compVideo1" loop playsinline autoplay muted>
+                      <source src="videos/results/INPUT VIDEO/a city street covered in snow with cherry blossom trees lining the sidewalks.mp4" />
+                  </video>
+
+
+
+                  </div>
+                  <div class="text-center" style="color: black;" id="mode-pills">
+                      <div class="btn-group btn-group-sm">
+
+                          <span class="btn btn-primary mode-pill active" data-value="PANO VIDEO"
+                              onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                              PANO VIDEO
+                          </span>
+
+                          <span class="btn btn-primary mode-pill active" data-value="INPUT VIDEO"
+                              onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                              INPUT VIDEO
+                          </span>
+
+
+                      </div>
+                  </div>
+
+
+                  <br>
+                  <p class="text-justify text-white" style="text-align: center;" id="prompt-box">a city street covered in snow with cherry blossom trees lining the sidewalks. </p>
+                  <script>
+                          const video0 = document.getElementById("compVideo0");
+                          const video1 = document.getElementById("compVideo1");
+
+                          function switchVideo(activeVidID) {
+                              if (activeVidID === 0) {
+                                  video0.classList.add("active"); 
+                                  video1.classList.remove("active"); 
+                                  video0.play();
+                                  video1.pause();
+                              } else if (activeVidID === 1) {
+                                  video1.classList.add("active"); 
+                                  video0.classList.remove("active"); 
+                                  video1.play();
+                                  video0.pause();
+                              }
+                          }
+
+                          document.querySelector("button#switchToVideo0").addEventListener("click", () => {
+                              switchVideo(0); 
+                          });
+
+                          document.querySelector("button#switchToVideo1").addEventListener("click", () => {
+                              switchVideo(1); 
+                          });
+                  </script>
+
+
+                  <div class="pill-row scene-pills" id="scene-pills">
+
+                      <span class="pill scene-pill active" data-value="a city street covered in snow with cherry blossom trees lining the sidewalks" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a city street covered in snow with cherry blossom trees lining the sidewalks.png" alt="a city street covered in snow with cherry blossom trees lining the sidewalks" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a group of three animals walking down a dirt road" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <img class="thumbnail-img" src="videos/results/inputs/a group of three animals walking down a dirt road.png" alt="a group of three animals walking down a dirt road" width="64">
+                    </span>
+
+                    <span class="pill scene-pill" data-value="a river with rough waters and rapids, with a rocky mountain in the background" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                      <img class="thumbnail-img" src="videos/results/inputs/a river with rough waters and rapids, with a rocky mountain in the background.png" alt="a river with rough waters and rapids, with a rocky mountain in the background" width="64">
+                  </span>
+
+
+                      <span class="pill scene-pill" data-value="a white SUV driving down a dirt road in a forested mountain valley" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <img class="thumbnail-img" src="videos/results/inputs/a white SUV driving down a dirt road in a forested mountain valley.png" alt="a white SUV driving down a dirt road in a forested mountain valley" width="64">
+                    </span>
+
+                    <span class="pill scene-pill" data-value="a serene pond filled with colorful koi fish" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                      <img class="thumbnail-img" src="videos/results/inputs/a serene pond filled with colorful koi fish.png" alt="a serene pond filled with colorful koi fish" width="64">
+                  </span>
+
+                    <span class="pill scene-pill" data-value="Stonehenge in Wiltshire, England, under the green Northern Lights" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                      <img class="thumbnail-img" src="videos/results/inputs/Stonehenge in Wiltshire, England, under the green Northern Lights.png" alt="Stonehenge in Wiltshire, England, under the green Northern Lights" width="64">
+                  </span>
+
+                  <span class="pill scene-pill" data-value="a rocky coastline with a lighthouse standing on a cliff" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                    <img class="thumbnail-img" src="videos/results/inputs/a rocky coastline with a lighthouse standing on a cliff.png" alt="a rocky coastline with a lighthouse standing on a cliff" width="64">
+                </span>
+
+                      <span class="pill scene-pill" data-value="a cute golden retriever wearing sunglasses and running outside in the rain" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a cute golden retriever wearing sunglasses and running outside in the rain.png" alt="a cute golden retriever wearing sunglasses and running outside in the rain" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a large glass display case filled with various electronic devices" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a large glass display case filled with various electronic devices.png" alt="a large glass display case filled with various electronic devices" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a lighthouse on a cliff overlooking the ocean" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a lighthouse on a cliff overlooking the ocean.png" alt="a lighthouse on a cliff overlooking the ocean" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a man standing on a hill overlooking a stunning mountain lake" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a man standing on a hill overlooking a stunning mountain lake.png" alt="a man standing on a hill overlooking a stunning mountain lake" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a red gondola lift in a mountainous region, with a beautiful sunset in the background" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a red gondola lift in a mountainous region, with a beautiful sunset in the background.png" alt="a red gondola lift in a mountainous region, with a beautiful sunset in the background" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a red car driving down a country road with a grassy field on the side" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a red car driving down a country road with a grassy field on the side.png" alt="a red car driving down a country road with a grassy field on the side" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a robot standing in a desolate, futuristic city" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a robot standing in a desolate, futuristic city.png" alt="a robot standing in a desolate, futuristic city" width="64">
+                      </span>
+
+                      <span class="pill scene-pill" data-value="a serene snowy landscape with a still lake surrounded by snow-covered trees and mountains in the background" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/inputs/a serene snowy landscape with a still lake surrounded by snow-covered trees and mountains in the background.png" alt="a serene snowy landscape with a still lake surrounded by snow-covered trees and mountains in the background" width="64">
+                      </span>
+
+
+                  </div>
+
+                  <script>
+                      activeMethodPill = document.querySelector('.method-pill.active-pill');
+                      activeScenePill = document.querySelector('.scene-pill.active-pill');
+                      activeModePill = document.querySelector('.mode-pill.active-pill');
+                  </script>
+              </div>
+
+          </div>
+          <div class="col-2"></div>
+      </div>
+  </div>
+
+
+  <div class="container-fluid bg-secondary text-white">
+      <div class="row py-5 align-item-center">
+          <div class="col-md-2"></div>
+          <div class="col-md-8 text-center h-100">
+              <h2 class=""><b> Method Overview</b></h2>
+              <img src="images/pipeline.png" class="img-fluid pb-3" alt="Explanation Overview">
+
+                  <h3 style="font-size: 18px; font-weight: normal;">
+                  <b>Pipeline of Imagine360.</b> Given perspective anchor video guidance, <strong><em>Imagine360 </em></strong> leverages a dual-branch video noising structure, with parallelled panorama and perspective branches to denoise 360° videos with plausible panoramic patterns. 
+                  Additionally, we devise the cross-domain spherical attention to capture long-range dependencies for reversed antipodal motion. 
+                  Finally, we introduce elevation-aware designs to handle general video inputs of changing elevations.      
+                  </h3>
+
+          </div>
+          <div class="col-md-2"></div>
+      </div>
+
+
+          <div class="col-md-2"></div>
+      </div>
+  </div>
+
+
+
+      <div class="container-fluid">
+        <div class="row py-3 align-item-center">
+          <div class="col-md-1"></div>
+          <div class="col-md-10 text-center h-100">
+          <h2 class=""><b>Additional Results(Panorama video and Multi-view Projections)</b></h2>
+
+            <div class="gallery-container">
+              <span class="arrow arrow-left" onclick="scrollGallery('gallery1', -300)">&#10094;</span>
+
+              <div id="gallery1" class="gallery">
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a white SUV driving down a dirt road in a forested mountain valley_sora.mp4" controls></video>
+                  <p>a white SUV driving down a dirt road in a forested mountain valley </p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/Santa Claus walking through a snowy forest at night.mp4" controls></video>
+                  <p>Santa Claus walking through a snowy forest at night</p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a busy street in London with many people walking down the street.mp4" controls></video>
+                  <p>a busy street in London with many people walking down the street</p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a beautiful beach with crashing waves and a forested cliff in the background.mp4" controls></video>
+                  <p>a beautiful beach with crashing waves and a forested cliff in the background</p>
+                </div>
+
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a colorful coral reef with a school of small fish swimming above it.mp4" controls></video>
+                  <p>a colorful coral reef with a school of small fish swimming above it</p>
+                </div>
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a large fountain in a city square surrounded by many buildings.mp4" controls></video>
+                  <p>a large fountain in a city square surrounded by many buildings</p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a monkey sitting in a pool of water.mp4" controls></video>
+                  <p>a monkey sitting in a pool of water</p>
+                </div>
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a large polar bear standing on a snow-covered mound in a winter forest.mp4" controls></video>
+                  <p>a large polar bear standing on a snow-covered mound in a winter forest</p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a picturesque canal in Venice, Italy with a gondola gliding through the water.mp4" controls></video>
+                  <p>a picturesque canal in Venice, Italy with a gondola gliding through the water</p>
+                </div>
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a river winding through a forested valley with the aurora borealis visible in the sky.mp4" controls></video>
+                  <p>a river winding through a forested valley with the aurora borealis visible in the sky</p>
+                </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a snow-covered log cabin in a forest.mp4" controls></video>
+                  <p>a snow-covered log cabin in a forest</p>
+                </div>
+
+
+
+
+                <div class="gallery-item">
+                  <video src="videos/results/more_results/a traditional French town with half-timbered houses and a cobbled street..mp4" controls></video>
+                  <p>a traditional French town with half-timbered houses and a cobbled street</p>
+                </div>
+
+
+
+
+              </div>
+              <span class="arrow arrow-right" onclick="scrollGallery('gallery1', 300)">&#10095;</span>
+          </div>
+            <div class="pagination-dots"></div>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        .bg-customcustom {
+            background-color: #000000cd; 
+        }
+        pre, code {
+            background-color: transparent; 
+            color: #fff; 
+        }
+      </style>
+
+      <div class="container-fluid pt-5">
+        <div class="row py-5 mt-5 bg-customcustom">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center text-white pb-2"><b>Citation</b></h1>
+                <p class="text-white">
+                    <pre><code class="text-white">
+                      @article{tan2024imagine360,
+                        title={Imagine360: Immersive 360 Video Generation from Perspective Anchor},
+                        author={Tan, Jing and Yang, Shuai and Wu, Tong and He, Jingwen and Guo, Yuwei and Liu, Ziwei and Lin, Dahua},
+                        journal={arXiv preprint arXiv:2412.03552},
+                        year={2024}
+                      }
+                    </code></pre>
+                </p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+
+
+    <div class="container-fluid">
+      <div class="center-text">
+        <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=050404&w=300&t=tt&d=G1Z8LlfDzVSJNsCCsFKtN_qV96kTLuOgPt_IeJDdBRE&co=ffffff&ct=000000'></script>
+          </div>
+  </div>
+
+
+
+</body>
+</html>
