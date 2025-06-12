@@ -1,0 +1,712 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .gallery-container {
+            position: relative;
+            width: 100%; /* Expand to full width */
+            margin: auto;
+          }
+          .gallery {
+            display: flex;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            padding: 10px;
+            background-color: #f5f5f5;
+            scrollbar-width: none; /* Firefox */
+          }
+          .gallery::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+          }
+          .gallery-item {
+            flex: 0 0 calc(25% - 20px); /* Four items per row */
+            margin: 0 10px;
+            text-align: center;
+          }
+          .gallery-item video {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+          }
+          .gallery-item p {
+            margin-top: 5px;
+            font-size: 14px;
+          }
+          .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            padding: 10px;
+          }
+          .arrow-left {
+            left: 10px; /* Adjust as needed */
+          }
+          .arrow-right {
+            right: 10px; /* Adjust as needed */
+          }
+          .pagination-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+          }
+          .pagination-dots span {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+          }
+          .pagination-dots .active {
+            background-color: #717171;
+          }
+        .authors {
+            color: #ffffff; /* Dark blue color */
+            font-weight: bold;
+            font-size: 1.25rem; /* Adjust font size if necessary */
+          }
+          .authors a {
+            color: #b6e0f8cb; /* Dark blue color for links */
+            text-decoration: none; /* Optional: remove underline from links */
+          }
+          .authors sup {
+            color: #ffffff; /* Dark blue color for superscripts */
+          }
+
+
+
+      </style>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const gallery = document.querySelector('.gallery');
+          const dotsContainer = document.querySelector('.pagination-dots');
+          const items = gallery.children;
+          const itemsCount = items.length;
+    
+          function createDots() {
+            for (let i = 0; i < itemsCount; i++) {
+              const dot = document.createElement('span');
+              dot.classList.add('dot');
+              if (i === 0) dot.classList.add('active');
+              dotsContainer.appendChild(dot);
+            }
+          }
+    
+          function updateDots() {
+            const dots = dotsContainer.children;
+            const scrollLeft = gallery.scrollLeft;
+            const itemWidth = gallery.scrollWidth / itemsCount;
+            const index = Math.round(scrollLeft / itemWidth);
+    
+            for (let i = 0; i < dots.length; i++) {
+              dots[i].classList.remove('active');
+            }
+            dots[index].classList.add('active');
+          }
+    
+
+        });
+    
+        function scrollGallery(galleryId, distance) {
+            const gallery = document.getElementById(galleryId);
+            gallery.scrollBy({
+            left: distance,
+            behavior: 'smooth'
+            });
+        }
+      </script>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>LayerPano3D: Layered 3D Panorama for Hyper-Immersive Scene Generation</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="images/teaser.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1711">
+    <meta property="og:image:height" content="576">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ys-imtech.github.io/projects/LayerPano3D/"/>
+    <meta property="og:title" content="LayerPano3D: Layered 3D Panorama for Hyper-Immersive Scene Generation" />
+    <meta property="og:description" content="3D immersive scene generation is a challenging yet critical task in computer vision and graphics.  A desired virtual 3D scene should 1) exhibit omnidirectional view consistency, and 2) allow for free exploration in complex scene hierarchies.  Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FOV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies. To tackle these challenges, we introduce <b><i>LayerPano3D</i></b> , a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt.  Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior. LayerPano3D comprises multiple dedicated designs: 1) we introduce a novel text-guided anchor view synthesis pipeline for high-quality, consistent panorama generation.  2) We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths. Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both full view consistency and immersive exploratory experience. We believe that LayerPano3D holds promise for advancing 3D panoramic scene creation with numerous applications.
+    ."/>
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LayerPano3D: Layered 3D Panorama for Hyper-Immersive Scene Generation" />
+    <meta name="twitter:description" content="3D immersive scene generation is a challenging yet critical task in computer vision and graphics.  A desired virtual 3D scene should 1) exhibit omnidirectional view consistency, and 2) allow for free exploration in complex scene hierarchies.  Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FOV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies. To tackle these challenges, we introduce LayerPano3D , a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt.  Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior. LayerPano3D comprises multiple dedicated designs: 1) we introduce a novel text-guided anchor view synthesis pipeline for high-quality, consistent panorama generation.  2) We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths. Extensive experiments demonstrate that our framework achieves state-of-the-art performance in both full view consistency and immersive exploratory experience. We believe that LayerPano3D holds promise for advancing 3D panoramic scene creation with numerous applications.
+    "/>
+    <meta name="twitter:image" content="images/teaser.png" />
+
+<link rel="icon" href="images/icon.png">
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/fontawesome.all.min.css">
+	<link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+	<script defer src="js/fontawesome.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/synced_video_selector.js"></script>
+
+</head>
+
+<body style="padding: 0%; width: 100%">
+    <div class="desktop-content">
+    <div class="video-background" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="videos/teaser/teaser.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="flex-center-container"> <!-- New container for flexbox centering -->
+            <div class="content">
+                <h1 style="font-size: 48px;"><b>LayerPano3D: Layered 3D Panorama for Hyper-Immersive Scene Generation</b></h1>
+
+                <p class="subtitle is-2" style="color: rgba(247, 93, 32, 0.975); font-weight: bold;">
+                  SIGGRAPH 2025 (Conference Track)
+                </p>
+                <p class="title is-5 mt-2 authors"> 
+                    <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>1,4*</sup>, 
+                    <a href="https://sparkstj.github.io/" target="_blank">Jing Tan</a><sup>2,4*</sup>, 
+
+                    <a href="https://github.com/kszpxxzmc/" target="_blank">Mengchen Zhang</a><sup>3,4</sup>, 
+                    <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>2,4</sup>&#9993, 
+                    <a href="https://yixuanli98.github.io/" target="_blank">Yixuan Li</a><sup>2,4</sup>, 
+
+                    <a href="https://stanford.edu/~gordonwz/" target="_blank">Gordon Wetzstein</a><sup>5</sup>,
+                    <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>6</sup>,
+                    <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>2,4</sup>&#9993
+              
+                  </p>
+                  <p class="subtitle is-5"> 
+                    <sup>1</sup> Shanghai Jiao Tong University, 
+                    <sup>2</sup> The Chinese University of Hong Kong, 
+                    <sup>3</sup> Zhejiang University,
+                    <br>
+                    <sup>4</sup> Shanghai AI Laboratory,
+                    <sup>5</sup> Stanford University, 
+                    <sup>6</sup> S-Lab, Nanyang Technological University
+                  </p>
+                  <div class="row justify-content-center">
+                    <div class="col-12 h3">
+                        <a href="https://arxiv.org/abs/2408.13252" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                        <a href="https://www.youtube.com/watch?v=lpNs5JwaJoA" class="btn btn-outline-light" role="button" style="font-size: 20px;" >Youtube</a>
+                        <a href="https://github.com/YS-IMTech/LayerPano3D" class="btn btn-outline-light" role="button" style="font-size: 20px;">Code</a>
+                    </div>
+                </div>
+
+                <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <div class="mobile-content">
+        <div class="container-fluid h-100 h-md-100 w-100 d-flex flex-column justify-content-center text-center my-5" style="height:100vh;">
+            <div class="row justify-content-center mb-3 order-md-first">
+                <div class="col-12">
+
+
+                  <video class="img-fluid pb-3" loop autoplay muted controls>
+                    <source src="videos/demo.mp4" />
+                </video>
+
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var video = document.getElementById('myVideo');
+    
+                        function isMobileDevice() {
+                            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+                        };
+    
+                        if (!isMobileDevice()) {
+                            setTimeout(function() {
+                                video.setAttribute('controls', '');
+                            }, 1500); // 2000 milliseconds = 2 seconds
+                        } else {
+                            video.setAttribute('controls', '');
+                        }
+                    });
+                    </script>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                    <h2><b>LayerPano3D</b>: Layered 3D Panorama <br/> for Hyper-Immersive Scene Generation</h2>
+                </div>
+
+                <p class="subtitle is-2" style="color: rgba(247, 93, 32, 0.975); font-weight: bold;">
+                  SIGGRAPH 2025 (Conference Track)
+                </p>
+
+                <p class="title is-5 mt-2 authors"> 
+                    <a href="https://ys-imtech.github.io/" target="_blank">Shuai Yang</a><sup>1,4*</sup>, 
+                    <a href="https://sparkstj.github.io/" target="_blank">Jing Tan</a><sup>2,4*</sup>, 
+
+                    <a href="https://github.com/kszpxxzmc/" target="_blank">Mengchen Zhang</a><sup>3,4</sup>, 
+                    <a href="https://wutong16.github.io/" target="_blank">Tong Wu</a><sup>2,4</sup>&#9993, 
+                    <a href="https://yixuanli98.github.io/" target="_blank">Yixuan Li</a><sup>2,4</sup>, 
+
+                    <a href="https://stanford.edu/~gordonwz/" target="_blank">Gordon Wetzstein</a><sup>5</sup>,
+                    <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>6</sup>,
+                    <a href="http://dahua.me/" target="_blank">Dahua Lin</a><sup>2,4</sup>&#9993
+              
+                  </p>
+                  <p class="subtitle is-5"> 
+                    <sup>1</sup> Shanghai Jiao Tong University, 
+                    <sup>2</sup> The Chinese University of Hong Kong, 
+                    <sup>3</sup> Zhejiang University,
+                    <br>
+                    <sup>4</sup> Shanghai AI Laboratory,
+                    <sup>5</sup> Stanford University, 
+                    <sup>6</sup> S-Lab, Nanyang Technological University
+                  </p>
+                  <div class="row justify-content-center">
+                    <div class="col-12 h3">                        
+                        <a href="https://arxiv.org/abs/2408.13252" class="btn btn-light" role="button" style="font-size: 20px;">Paper</a>
+                        <a href="https://www.youtube.com/watch?v=lpNs5JwaJoA" class="btn btn-light" role="button" style="font-size: 20px;" >Youtube</a>
+                        <a href="https://github.com/YS-IMTech/LayerPano3D" class="btn btn-light" role="button" style="font-size: 20px;">Code</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-12">
+                </div>
+            </div>
+
+        </div>
+    
+        <div class="video-background">
+            <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                <source src="videos/teaser/teaser.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+            <div class="flex-center-container"> 
+                <div class="content">
+                    <h1>We generate Hyper-Immersive Panoramic scenes</h1>
+                    <h3>from a single text-description</h3>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+    <div class="container-fluid bg-secondary text-white">
+
+      <div class="row py-5 align-item-center">
+          <div class="col-md-2"></div>
+          <div class="col-md-8 text-center h-100">
+              <div class="row">
+
+                  <video class="video img-fluid" loop autoplay muted>
+                      <source src="videos/web_case_video.mp4" />
+                  </video>
+              </div>
+
+          </div>
+          
+      </div>
+  </div>
+
+
+    <div class="desktop-content">
+        <div class="container-fluid px-5" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-5">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify px-5">
+                        <h3 style="font-size: 18px; font-weight: normal;">
+
+                          3D immersive scene generation is a challenging yet critical task in computer vision and graphics. 
+                          A desired virtual 3D scene should <b>1)</b> exhibit omnidirectional view consistency, and <b>2)</b> allow for large-range exploration in complex scene hierarchies. 
+                          Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FOV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies.
+                          To tackle these challenges, we introduce <strong><em>LayerPano3D </em></strong>, a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt. 
+                          Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior. LayerPano3D comprises multiple dedicated designs: 
+                          <b>1)</b> We introduce a new panorama dataset Upright360, comprising 9k high-quality and upright panorama images, and finetune the advanced Flux model on Upright360 for high-quality, upright and consistent panorama generation.
+                          <b>2)</b> We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths.
+                          Extensive experiments demonstrate that our framework generates state-of-the-art 3D panoramic scene in both full view consistency and immersive exploratory experience. We believe that <strong><em>LayerPano3D </em></strong> holds promise for advancing 3D panoramic scene creation with numerous applications.
+                    
+                    
+                      </h3>
+
+                    </p>
+                </div>
+
+                <div class="col-md-7">
+
+                  <video class="img-fluid pb-3" loop autoplay muted controls>
+                    <source src="videos/demo.mp4" />
+                </video>
+
+                </div>
+            </div>
+            <br>
+        </div>  
+        
+
+    </div>
+
+    <div class="mobile-content">
+        <div class="container" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-6">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify">
+
+                      3D immersive scene generation is a challenging yet critical task in computer vision and graphics. 
+                      A desired virtual 3D scene should <b>1)</b> exhibit omnidirectional view consistency, and <b>2)</b> allow for large-range exploration in complex scene hierarchies. 
+                      Existing methods either rely on successive scene expansion via inpainting or employ panorama representation to represent large FOV scene environments. However, the generated scene suffers from semantic drift during expansion and is unable to handle occlusion among scene hierarchies.
+                      To tackle these challenges, we introduce <strong><em>LayerPano3D </em></strong>, a novel framework for full-view, explorable panoramic 3D scene generation from a single text prompt. 
+                      Our key insight is to decompose a reference 2D panorama into multiple layers at different depth levels, where each layer reveals the unseen space from the reference views via diffusion prior. LayerPano3D comprises multiple dedicated designs: 
+                      <b>1)</b> We introduce a new panorama dataset Upright360, comprising 9k high-quality and upright panorama images, and finetune the advanced Flux model on Upright360 for high-quality, upright and consistent panorama generation.
+                      <b>2)</b> We pioneer the Layered 3D Panorama as underlying representation to manage complex scene hierarchies and lift it into 3D Gaussians to splat detailed 360-degree omnidirectional scenes with unconstrained viewing paths.
+                      Extensive experiments demonstrate that our framework generates state-of-the-art 3D panoramic scene in both full view consistency and immersive exploratory experience. We believe that <strong><em>LayerPano3D </em></strong> holds promise for advancing 3D panoramic scene creation with numerous applications.
+
+
+
+                    </p>
+                </div>
+
+            </div>
+            <br>
+        </div>    
+    </div>
+
+
+
+
+
+    <div class="container-fluid">
+        <div class="row py-5  bg-dark">
+            <div class="col-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center pb-3 text-white">
+				  <b>Gallery</b>
+                </h1><br>
+
+                <script>
+                    activeMethodPill = "zipnerf"
+                    activeScenePill = document.querySelector('.scene-pill.active-pill');
+                    activeModePill = document.querySelector('.mode-pill.active-pill');
+                </script>
+                
+                <div class="text-center">
+                    <div class="video-container">
+                        <video class="video" style="height: 480px; max-width: 100%;" m id="compVideo0" loop playsinline autoplay muted>
+                            <source src="videos/results/Free Rendering/teaser.mp4" />
+                        </video>
+                        <!-- <video class="video" style="height: 480px; max-width: 100%;" id="compVideo1" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/0/teaser.mp4" />
+                        </video>
+
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo2" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/-45/teaser.mp4" />
+                        </video>
+
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo3" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/45/teaser.mp4" />
+                        </video> -->
+
+
+
+
+
+                    </div>
+                    <div class="text-center" style="color: black;" id="mode-pills">
+                        <div class="btn-group btn-group-sm">
+
+                            <span class="btn btn-primary mode-pill active" data-value="Free Rendering"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                Free Rendering
+                            </span>
+
+                            <!-- <span class="btn btn-primary mode-pill active" data-value="0"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                0°
+                            </span>
+
+                            <span class="btn btn-primary mode-pill active" data-value="-45"
+                            onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                            -45°
+                            </span>
+
+                            <span class="btn btn-primary mode-pill active" data-value="45"
+                            onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                            45°
+                            </span> -->
+                        </div>
+                    </div>
+
+
+                    <br>
+                    <p class="text-justify text-white" style="text-align: center;" id="prompt-box">Autumn park scene with people sitting on benches surrounded by colorful trees, storybook illustration style.</p>
+                    <script>
+                        video0 = document.getElementById("compVideo0");
+
+
+                        video0.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 0 && select){
+                                video0.play();
+                                // print video size
+                                console.log(video0.videoWidth, video0.videoHeight);
+                                video0.hidden = false;
+
+                            }
+                        });
+
+
+                    </script>
+
+
+                    <div class="pill-row scene-pills" id="scene-pills">
+
+                        <span class="pill scene-pill active" data-value="teaser" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/teaser.png" alt="teaser" width="64">
+                        </span>
+
+                        <span class="pill scene-pill" data-value="v1_0" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v1_0.png" alt="v1_0" width="64">
+                        </span>
+
+
+                        <span class="pill scene-pill" data-value="v2_8" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/pano_demo/v2_8.png" alt="v2_8" width="64">
+                      </span>
+                      <span class="pill scene-pill" data-value="v1_8" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <img class="thumbnail-img" src="videos/results/pano_demo/v1_8.png" alt="v1_8" width="64">
+                    </span>
+
+                      <span class="pill scene-pill" data-value="v2_0" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <img class="thumbnail-img" src="videos/results/pano_demo/v2_0.png" alt="v2_0" width="64">
+                    </span>
+
+                        <span class="pill scene-pill" data-value="v1_10" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/pano_demo/v1_10.png" alt="v1_10" width="64">
+                      </span>
+
+                        <span class="pill scene-pill" data-value="v2_4" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/pano_demo/v2_4.png" alt="v2_4" width="64">
+                      </span>
+
+                        <span class="pill scene-pill" data-value="v2_1" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v2_1.png" alt="v2_1" width="64">
+                        </span>
+
+                        <span class="pill scene-pill" data-value="v2_3" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v2_3.png" alt="v2_3" width="64">
+                        </span>
+
+                        <span class="pill scene-pill" data-value="v2_5" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v2_5.png" alt="v2_5" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="v2_6" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v2_6.png" alt="v2_6" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="v1_7" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                          <img class="thumbnail-img" src="videos/results/pano_demo/v1_7.png" alt="v1_7" width="64">
+                      </span>
+                      <span class="pill scene-pill" data-value="v1_9" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <img class="thumbnail-img" src="videos/results/pano_demo/v1_9.png" alt="v1_9" width="64">
+                    </span>
+
+                        <span class="pill scene-pill" data-value="v2_10" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="videos/results/pano_demo/v2_10.png" alt="v2_10" width="64">
+                        </span>
+
+
+                    </div>
+
+                    <script>
+                        activeMethodPill = document.querySelector('.method-pill.active-pill');
+                        activeScenePill = document.querySelector('.scene-pill.active-pill');
+                        activeModePill = document.querySelector('.mode-pill.active-pill');
+                    </script>
+                </div>
+
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid bg-secondary text-white">
+        <div class="row py-5 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center h-100">
+                <h2 class=""><b> Method Overview</b></h2>
+                <img src="images/pipeline.png" class="img-fluid pb-3" alt="Explanation Overview">
+
+                    <h3 style="font-size: 18px; font-weight: normal;">
+                    <b>Overview of pipeline.</b> Our framework consists of three stages, namely reference panorama generation, multi-layer panorama construction and panoramic 3D scene optimization. 
+                    <strong><em>LayerPano3D </em></strong> streamlines an automatic generation pipeline without any manual efforts to design scene-specific navigation paths for expansion or completion.           
+                    </h3>
+
+                <video class="video img-fluid" loop autoplay muted>
+                    <source src="videos/pano_rendering.mp4" />
+                </video>
+                    <h3 style="font-size: 18px; font-weight: normal;">
+                    <span>    
+                        <strong>LayerPano3D</strong> is robust to render consistent new panorama images at various locations other than the original camera location in the center.
+                    </span>
+                    </h3>
+
+
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid">
+    <div class="row py-3 align-item-center">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 text-center h-100">
+      <h2 class=""><b>Additional Results in Multi-Layer 3D Representation (Image Guided)</b></h2>
+
+        <div class="gallery-container">
+            <span class="arrow arrow-left" onclick="scrollGallery('gallery2', -300)">&#10094;</span>
+
+          <div id="gallery2" class="gallery">
+
+            <div class="gallery-item">
+              <video src="videos/results/3d/stones.mp4" controls></video>
+            </div>
+
+            <div class="gallery-item">
+                <video src="videos/results/3d/generated6.mp4" controls></video>
+              </div>
+
+            <div class="gallery-item">
+                <video src="videos/results/3d/generated3.mp4" controls></video>
+              </div>
+
+              
+              <div class="gallery-item">
+                <video src="videos/results/3d/cafeterras.mp4" controls></video>
+              </div>
+
+
+              <div class="gallery-item">
+                <video src="videos/results/3d/florence.mp4" controls></video>
+              </div>
+
+
+              <div class="gallery-item">
+                <video src="videos/results/3d/generated4.mp4" controls></video>
+              </div>
+              
+              <div class="gallery-item">
+                <video src="videos/results/3d/corot_bridge.mp4" controls></video>
+              </div>
+
+                <div class="gallery-item">
+                  <video src="videos/results/3d/generated10.mp4" controls></video>
+                </div>
+
+                <div class="gallery-item">
+                    <video src="videos/results/3d/generated12.mp4" controls></video>
+                  </div>
+
+                  <div class="gallery-item">
+                    <video src="videos/results/3d/budapest.mp4" controls></video>
+                  </div>
+
+                  <div class="gallery-item">
+                      <video src="videos/results/3d/italy_street.mp4" controls></video>
+                    </div>
+  
+  
+                    <div class="gallery-item">
+                        <video src="videos/results/3d/window5.mp4" controls></video>
+                      </div>
+
+          </div>
+          <span class="arrow arrow-right" onclick="scrollGallery('gallery2', 300)">&#10095;</span>
+        </div>
+        <div class="pagination-dots"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid pt-5">
+    <div class="row py-5 mt-5 bg-customcustom">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <h1 class="text-center text-white pb-2"><b>Citation</b></h1>
+            <p class="text-white">
+                <pre><code class="text-white">
+@article{yang2024layerpano3d,
+  title={LayerPano3D: Layered 3D Panorama for Hyper-Immersive Scene Generation},
+  author={Yang, Shuai and Tan, Jing and Zhang, Mengchen and Wu, Tong and Li, Yixuan and Wetzstein, Gordon and Liu, Ziwei and Lin, Dahua},
+  journal={arXiv preprint arXiv:2408.13252},
+  year={2024}
+}
+                </code></pre>
+            </p>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+
+
+<div class="container-fluid">
+    <div class="center-text">
+        <!-- <a href="https://clustrmaps.com/site/1bzgi"  title="Visit tracker"><img src="//www.clustrmaps.com/map_v2.png?d=uVAj7gydWIyD0AQWR3NPboT8GvHlNvMR9cAYCUq58m0&cl=ffffff" /></a> -->
+        <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=080808&w=300&t=tt&d=d6Vpq3KIn61IaMyX3K1e3cYlB--hsS2XorgAs89ixhQ&co=ffffff&cmo=24a3ed&cmn=ff5353&ct=171515'></script>
+        </div>
+</div>
+
+      
+</body>
+</html>
