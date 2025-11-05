@@ -89,6 +89,28 @@ function selectCompVideo(methodPill, scenePill, n_views, modePill) {
         case 'Stonehenge in Wiltshire, England, under the green Northern Lights':
             promptTextBox.text("Stonehenge in Wiltshire, England, under the green Northern Lights.");
             break;
+
+        case 'a bright sandy beach and turquoise ocean meeting at a coastline':
+            promptTextBox.text("a bright sandy beach and turquoise ocean meeting at a coastline");
+            break;
+
+        case 'A charming two-story red brick house with a white porch, bay window, and vibrant red flowers under a clear blue sky':
+            promptTextBox.text("A charming two-story red brick house with a white porch, bay window, and vibrant red flowers under a clear blue sky");
+            break;
+
+        case 'a large beige villa with a red-tiled roof and arched porch, nestled in lush green forest with a manicured lawn and driveway':
+            promptTextBox.text("a large beige villa with a red-tiled roof and arched porch, nestled in lush green forest with a manicured lawn and driveway");
+            break;
+
+        case 'A sunny park with a blue outdoor gym, green trees, and a path leading to distant city skyscrapers':
+            promptTextBox.text("A sunny park with a blue outdoor gym, green trees, and a path leading to distant city skyscrapers");
+            break;
+
+
+
+
+
+
         // case 'l15':
         //     promptTextBox.text("A tranquil mountain lake, crystal clear reflections, majestic mountains, blue sky, black and white photo");
         //     break;
