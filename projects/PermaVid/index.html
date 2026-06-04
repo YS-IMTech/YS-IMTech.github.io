@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PermaVid</title>
+    <link rel="icon" href="assets/icons/icon.png">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
+    <!-- <script data-src="https://cdn.tailwindcss.com/3.4.16"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"> -->
+
+    <style>
+        /* 已有样式... */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 目录面板通用样式（半透明+磨砂+缩小） */
+        .toc-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 14px;
+        }
+
+        /* 高亮当前 section 的链接 */
+        .toc-link-active {
+            color: #2563eb;              /* tailwind 的 blue-600 */
+            font-weight: 600;
+            border-left: 3px solid #2563eb;
+            padding-left: 0.5rem;        /* 让高亮时稍微缩进一点 */
+        }
+    </style>
+
+
+    <style>
+        
+        .bg-video-wrapper {
+            position: relative;
+            overflow: hidden; /* 防止视频溢出 */
+        }
+
+        .bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /* 视频铺满且不变形 */
+            z-index: -1;        /* 在内容后面 */
+        }
+
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            /* 想保留一点渐变效果可以在这里加 */
+            background: linear-gradient(
+                135deg,
+                rgba(253,145,57,0.25) 0%,
+                rgba(250,64,85,0.25) 33%,
+                rgba(126,56,185,0.25) 66%,
+                rgba(28,126,235,0.25) 100%
+            );
+            z-index: 0;
+        }
+
+        
+        /* 添加平滑过渡效果 */
+        .group:hover .group-hover\:block {
+            display: block !important;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(
+                135deg,
+                rgba(253,145,57,0.15) 0%,
+                rgba(250,64,85,0.15) 33%,
+                rgba(126,56,185,0.15) 66%,
+                rgba(28,126,235,0.15) 100%
+
+            );
+            animation: gradientAnim 10s ease infinite;
+        }
+
+        @keyframes gradientAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            50% { opacity: 0.2; }
+        }
+
+        .hover-3d {
+            transition: transform 0.3s ease;
+        }
+        .hover-3d:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+    </style>
+</head>
+
+
+
+
+<body class="font-sans antialiased">
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const videos = document.querySelectorAll('video[data-src]');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        // 进入视口：开始加载 + 播放
+                        if (!video.src) {
+                            video.src = video.dataset.src;
+                            video.load();
+                        }
+                        if (video.paused) {
+                            video.play().catch(() => {});
+                        }
+                    } else {
+                        // 离开视口：暂停，必要时可以卸载 src 减少内存
+                        if (!video.paused) {
+                            video.pause();
+                        }
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.2
+            });
+
+            videos.forEach(v => observer.observe(v));
+        });
+    </script>
+
+
+
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 w-full z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-2xl font-bold text-white">PermaVid</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="https://www.youtube.com/watch?v=DQHfI6btVRk" class="text-white/80 hover:text-white px-3 py-2">YouTube</a>
+                        <a href="http://arxiv.org/abs/26xx.xxxxx" class="text-white/80 hover:text-white px-3 py-2">Paper</a>
+                        <a href="https://github.com/YS-IMTech/PermaVid" class="text-white/80 hover:text-white px-3 py-2">GitHub</a>
+
+                        <div class="relative group">
+                            <button class="text-white/80 hover:text-white px-3 py-2 focus:outline-none">
+                                More Works
+                                <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            
+                            <div class="absolute hidden group-hover:block pt-2 left-1/2 -translate-x-1/2 max-w-[calc(100vw-20px)]">
+                                <div class="bg-white rounded-lg shadow-lg py-2 w-[max-content] min-w-[200px] max-w-full overflow-x-auto">
+                                  <div class="px-2"> 
+                                    <a href="https://spmem.github.io/" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 whitespace-nowrap">SPMem</a>
+                                    <a href="https://ys-imtech.github.io/projects/LayerPano3D/" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 whitespace-nowrap">LayerPano3D</a>
+                                    <a href="https://ys-imtech.github.io/projects/Imagine360/" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 whitespace-nowrap">Imagine360</a>
+                                  </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 左侧目录：桌面端始终显示，移动端通过按钮打开 -->
+    <!-- 移动端 TOC 开关按钮 -->
+    <!-- <button
+        id="toc-toggle"
+        class="md:hidden fixed left-3 top-20 z-50 px-3 py-1 rounded-full bg-white bg-opacity-80 shadow-lg text-xs font-medium">
+        TOC
+    </button> -->
+
+    <!-- 通用目录面板：md 以上默认显示，移动端通过按钮控制 -->
+    <!-- <div
+        id="toc-panel"
+        class="toc-panel fixed left-3 top-1/2 transform -translate-y-1/2 z-40 w-40 md:w-44 px-3 py-3 text-xs md:text-sm text-gray-700 shadow-lg hidden md:block">
+    
+        <nav class="flex flex-col space-y-4 pl-4 text-gray-400 font-medium">
+            <a href="#image-generation" class="toc-link block hover:text-blue-600">Image Generation</a>
+            <a href="#video-generation" class="toc-link block hover:text-blue-600">Video Generation</a>
+            <a href="#customized-video-generation" class="toc-link block hover:text-blue-600">Customized Video Generation</a>
+            <a href="#image-editing" class="toc-link block hover:text-blue-600">Image Editing</a>
+            <a href="#instruction-based-video-editing" class="toc-link block hover:text-blue-600">Instruction-Based Video Editing</a>
+            <a href="#video-generation-driven" class="toc-link block hover:text-blue-600">Video generation driven by reference video</a>
+        </nav>
+    </div> -->
+
+
+    <section class="min-h-screen bg-white pt-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          
+          <!-- 顶部小logo/brand
+          <div class="flex justify-center mb-6">
+            <div class="text-sm tracking-widest text-gray-600 font-semibold">
+              Robbyant Brain
+            </div>
+          </div> -->
+      
+          <!-- 大标题 -->
+          <div class="text-center">
+            <h1 class="text-5xl sm:text-6xl md:text-7xl font-semibold leading-tight">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-red-500">
+                    PermaVid
+              </span>
+            </h1>
+      
+            <!-- 副标题 -->
+            <p class="mt-5 text-lg sm:text-xl text-gray-500">
+                Consistent Video Generation Across Edits via Disentangled Context Memory
+
+              </p>
+              
+              
+      
+            <!-- 作者/单位（可选：放到副标题下面） -->
+            <div class="mt-6 text-gray-700">
+              <div class="text-base sm:text-lg font-medium">
+                <a class="hover:underline" href="https://ys-imtech.github.io/">Shuai Yang*</a><sup>1</sup>,
+                <a class="hover:underline" href="#">Bingjie Gao*</a><sup>1</sup>,
+                <a class="hover:underline" href="https://liuziwei7.github.io/">Ziwei Liu</a><sup>3</sup>,
+                <a class="hover:underline" href="https://myownskyw7.github.io/">Jiaqi Wang</a><sup>5</sup>,
+                <a class="hover:underline" href="http://dahua.site/">Dahua Lin</a><sup>4</sup>,
+                <a class="hover:underline" href="https://wutong16.github.io/">Tong Wu</a><sup>2</sup>
+              </div>
+              <div class="mt-2 text-sm text-gray-500 leading-relaxed">
+                <sup>1</sup>Shanghai Jiao Tong University &nbsp;·&nbsp;
+                <sup>2</sup>Stanford University &nbsp;·&nbsp;
+                <sup>3</sup>S-Lab, NTU &nbsp;·&nbsp;
+                <sup>4</sup>CUHK &nbsp;·&nbsp;
+                <sup>5</sup>Shanghai Innovation Institute
+              </div>
+            </div>
+      
+            <!-- 按钮组 -->
+            <div class="mt-10 flex flex-wrap justify-center gap-3">
+              <a href="http://arxiv.org/abs/26xx.xxxxx" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 text-gray-800 hover:bg-gray-50">
+                <span>📄</span><span>Paper</span>
+              </a>
+              <a href="https://github.com/YS-IMTech/PermaVid" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 text-gray-800 hover:bg-gray-50">
+                <span>💻</span><span>Code</span>
+              </a>
+              <a href="https://huggingface.co/datasets/YS-IMTech/PermaVid" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 text-gray-800 hover:bg-gray-50">
+                <span>🤗</span><span>Dataset</span>
+              </a>
+            </div>
+          </div>
+      
+          <!-- 中间视频卡片（重点：圆角 + 阴影 + 不再做背景） -->
+          <div class="mt-14">
+            <div class="rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 bg-gray-100">
+              <video
+                class="w-full aspect-video object-cover"
+                autoplay
+                controls
+                muted
+                loop
+                playsinline
+                poster="https://cdn.jsdelivr.net/gh/SOTAMak1r/VINO-web@main/assets/videos/teaser.png"
+              >
+                <source src="assets/videos/demo.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <!-- 中间视频卡片（重点：圆角 + 阴影 + 不再做背景）
+          <div class="mt-14">
+            <div class="rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 bg-gray-100">
+              <iframe
+                class="w-full aspect-video"
+                src="https://www.youtube.com/watch?v=DQHfI6btVRk"
+                title="PermaVid Demo Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div> -->
+      
+          <!-- 正文介绍（对应你截图里视频下方那段） -->
+            <div class="mt-10 text-gray-600 leading-relaxed">
+            <p class="text-justify">
+              <span class="font-semibold text-gray-800 text-xl align-middle">Abstract:</span>
+              Consistent video generation under editing operations requires persistence: when edits modify scene appearance or layout, subsequent generations should remain coherent across time and viewpoints. However, existing memory designs struggle to maintain long-term consistency after such modifications, as stored contexts may become outdated or invalid. To address this, we propose <strong>PermaVid</strong>, a novel framework built upon a multi-modal context memory that disentangles spatial context into semantic appearance and geometric structure, together with an edit-aware memory update and retrieval strategy that keeps memory evolution aligned with subsequent observations. Specifically, we develop two complementary memory banks: an RGB context memory that captures appearance-aware observations while implicitly encoding geometry, and a depth context memory that preserves geometry-only structure disentangled from semantics. Building on this design, we introduce a memory-guided video generation model that performs multi-modal feature fusion under reference conditions drawn from mixed-modality memory contexts. Experiments demonstrate that our method maintains strong long-term semantic and structural consistency after edits, significantly outperforming state-of-the-art methods.
+            </p>
+            </div>
+          
+          
+      
+        </div>
+      </section>
+      
+
+    <!-- Demo Video Section -->
+    <div class="bg-white py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold mb-4">What is PermaVid?</h2>
+      
+    <!-- 图片 + 下方文字 完整布局 -->
+    <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+
+        <!-- 图片区域 -->
+        <div class="relative aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-100">
+            <img
+            src="assets/images/pipeline.png"
+            alt="PermaVid Demo"
+            class="w-full h-full object-cover"
+            />
+        </div>
+
+        <!-- 图片下方左对齐文字（PermaVid 加粗） -->
+        <div class="mt-3 text-left text-gray-800 leading-relaxed">
+            <strong>PermaVid</strong> maintains a disentangled multi-modal context memory with an RGB bank for semantic appearance and a depth bank for geometric structure. Given target camera poses and editing operations, it updates and retrieves memory in an edit-aware manner, then fuses mixed-modality references to guide consistent video generation across time, viewpoints, and edits.
+        </div>
+
+        </div>
+    </div>
+
+
+
+
+        
+  
+      
+            </div>
+          </div>
+      
+        </div>
+      </div>
+      
+
+
+
+    <!-- Demo Video Section -->
+    <div class="bg-white py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+          <div class="text-center mb-10">
+    <h2 class="text-3xl font-bold mb-4">Consistency Across <span class="text-red-600">Time, Viewpoints, Edits</span></h2>      
+
+    <!-- 图片 + 下方文字 完整布局 -->
+    <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+
+        <!-- 图片区域 -->
+        <div class="relative aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-100">
+            <img
+            src="assets/images/teaser.jpg"
+            alt="PermaVid Demo"
+            class="w-full h-full object-cover"
+            />
+        </div>
+
+        </div>
+    </div>
+
+
+    <!-- <div class="bg-white py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold mb-4">Consistency Across Edits</h2>
+      
+      
+          <div class="flex justify-center">
+            <div class="w-full max-w-4xl">
+      
+              <div class="relative aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-100">
+                <img
+                  src="assets/images/teaser.jpg"
+                  alt="PermaVid Demo"
+                  class="w-full h-full object-cover"
+                />
+              </div> -->
+
+
+        <!-- Global / Local 解析区域 -->
+        <div class="mt-8 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+            <!-- Global State Change -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div class="flex items-baseline justify-between mb-3">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900">
+                    Global Edits Occur
+                </h3>
+                <span class="text-xs sm:text-sm text-gray-500">
+                    (e.g., style transformation)
+                </span>
+                </div>
+        
+                <ul class="list-disc list-inside space-y-2 text-gray-600 text-sm sm:text-base text-left">
+                <li>
+                    Preserve stable geometry
+                </li>
+                <li>
+                    Propagate edited semantic appearance
+                </li>
+                </ul>
+            </div>
+        
+            <!-- Local State Change -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div class="flex items-baseline justify-between mb-3">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900">
+                    Local Edits Occur
+                </h3>
+                <span class="text-xs sm:text-sm text-gray-500">
+                    (e.g., object-level editing)
+                </span>
+                </div>
+        
+                <ul class="list-disc list-inside space-y-2 text-gray-600 text-sm sm:text-base text-left">
+                <li>
+                    Recall edited local content
+                </li>
+                <li>
+                    Preserve unchanged geometry structure
+                </li>
+                </ul>
+            </div>
+        
+            </div>
+        </div>
+        
+  
+      
+            </div>
+          </div>
+      
+        </div>
+      </div>
+      
+      
+      
+<!-- ===================== Global Edits (对应assets/tasks/global 3页，每页4个视频) ===================== -->
+<div class="bg-gray-50 py-24" id="video-generation">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">
+                Long-term Consistency after <span class="text-red-500">Global Edits</span>
+            </h2>
+        </div>
+        <div class="relative" id="image-editing-carousel">
+            <!-- Slides Wrapper -->
+            <div class="overflow-hidden">
+                <div class="flex transition-transform duration-500 ease-in-out" id="video-track">
+                    <!-- Slide 1 Global Page1 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Capture1.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Capture6.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Capture8.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Capture10.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 2 Global Page2 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/change-winter2.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/change4.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/evening1.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/evening3.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide3 Global Page3 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/evening5.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Japanese4.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/Japanese7.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/global/morning2.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation Dots 3个点位 -->
+            <div class="flex justify-center mt-8 space-x-2">
+                <button class="w-3 h-3 rounded-full bg-gray-800 focus:outline-none transition-colors duration-200 video-dot" onclick="goToVideoSlide(0)"></button>
+                <button class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 focus:outline-none transition-colors duration-200 video-dot" onclick="goToVideoSlide(1)"></button>
+                <button class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 focus:outline-none transition-colors duration-200 video-dot" onclick="goToVideoSlide(2)"></button>
+            </div>
+            <!-- Arrows -->
+            <button class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-12 p-2 rounded-full bg-gray-800 shadow-lg hover:bg-gray-700 focus:outline-none hidden md:block" onclick="prevVideoSlide()">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-12 p-2 rounded-full bg-gray-800 shadow-lg hover:bg-gray-700 focus:outline-none hidden md:block" onclick="nextVideoSlide()">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== Local Edits (对应assets/tasks/local 3页，每页4个视频) ===================== -->
+<div class="bg-gray-50 py-24" id="understand-then-generate">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">
+                Long-term Consistency after <span class="text-red-500">Local Edits</span>
+            </h2>
+        </div>
+        <div class="relative" id="image-editing-carousel-local">
+            <!-- Slides Wrapper -->
+            <div class="overflow-hidden">
+                <div class="flex transition-transform duration-500 ease-in-out" id="und-track">
+                    <!-- Slide1 Local Page1 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/add1.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/add2.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/add3.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/add4.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide2 Local Page2 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/add7.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Remove2.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Remove2-3.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Replace2-1.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide3 Local Page3 -->
+                    <div class="w-full flex-shrink-0">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Replace2-3.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Replace2-4.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Replace3.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                            <div>
+                                <video preload="metadata" class="w-full h-auto rounded-lg shadow-lg cursor-pointer object-cover aspect-square" src="assets/tasks/local/Replace5.mp4" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation Dots 3个点位 -->
+            <div class="flex justify-center mt-8 space-x-2">
+                <button class="w-3 h-3 rounded-full bg-gray-800 focus:outline-none transition-colors duration-200 und-dot" onclick="goToUndSlide(0)"></button>
+                <button class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 focus:outline-none transition-colors duration-200 und-dot" onclick="goToUndSlide(1)"></button>
+                <button class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 focus:outline-none transition-colors duration-200 und-dot" onclick="goToUndSlide(2)"></button>
+            </div>
+            <!-- Arrows -->
+            <button class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-12 p-2 rounded-full bg-gray-800 shadow-lg hover:bg-gray-700 focus:outline-none hidden md:block" onclick="prevUndSlide()">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-12 p-2 rounded-full bg-gray-800 shadow-lg hover:bg-gray-700 focus:outline-none hidden md:block" onclick="nextUndSlide()">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+    
+
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const groups = ['1', '2', '3', '4', '5', '6', '7', '8', '1_w', '2_w', '3_w'];
+            
+            groups.forEach(groupId => {
+                const videos = document.querySelectorAll(`[data-video-group="${groupId}"] video`);
+                let loadedCount = 0;
+        
+                const playGroup = () => {
+                    videos.forEach(video => video.play());
+                };
+
+                videos.forEach(video => {
+                    
+                    const handleCanPlay = () => {
+                        loadedCount++;
+                        if (loadedCount === videos.length) {
+                            playGroup();
+                            video.removeEventListener('canplaythrough', handleCanPlay);
+                        }
+                    };
+        
+                    if (video.readyState >= 4) {
+                        loadedCount++;
+                        if (loadedCount === videos.length) playGroup();
+                    } else {
+                        video.addEventListener('canplaythrough', handleCanPlay);
+                    }
+                });
+            });
+        });
+    </script> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tocPanel = document.getElementById('toc-panel');
+            const tocToggle = document.getElementById('toc-toggle');
+            const tocLinks = tocPanel.querySelectorAll('a.toc-link');
+            const sections = document.querySelectorAll('[data-toc-section]');
+
+            /* --- 移动端：点击按钮展开/收起 TOC --- */
+            if (tocToggle) {
+                tocToggle.addEventListener('click', function () {
+                    tocPanel.classList.toggle('hidden');
+                });
+
+                // 窗口大小变化时：md 以上始终显示，md 以下默认隐藏
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth >= 768) {
+                        tocPanel.classList.remove('hidden');
+                    } else {
+                        tocPanel.classList.add('hidden');
+                    }
+                });
+            }
+
+            /* --- 点击目录后自动收起（仅移动端） --- */
+            tocLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth < 768) {
+                        tocPanel.classList.add('hidden');
+                    }
+                });
+            });
+
+            /* --- 自动高亮当前章节 --- */
+            const idToLink = {};
+            tocLinks.forEach(link => {
+                const id = link.getAttribute('href').replace('#', '');
+                idToLink[id] = link;
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        const activeLink = idToLink[id];
+                        if (!activeLink) return;
+
+                        tocLinks.forEach(l => l.classList.remove('toc-link-active'));
+                        activeLink.classList.add('toc-link-active');
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.2,
+                rootMargin: '0px 0px -60% 0px'  // 提前一点高亮
+            });
+
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const groups = ['1', '2', '3', '4', '5', '6', '7', '8', '1_w', '2_w', '3_w'];
+
+            groups.forEach(groupId => {
+                const videos = document.querySelectorAll(`[data-video-group="${groupId}"] video`);
+                if (!videos.length) return;
+
+                let loadedCount = 0;
+
+                const playGroup = () => {
+                    videos.forEach(video => {
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(err => {
+                                // 只忽略被打断的错误，其它的打印出来
+                                if (err.name !== 'AbortError') {
+                                    console.error('Group video play error:', err);
+                                }
+                            });
+                        }
+                    });
+                };
+
+                videos.forEach(video => {
+                    const handleCanPlay = () => {
+                        loadedCount++;
+                        if (loadedCount === videos.length) {
+                            playGroup();
+                            video.removeEventListener('canplaythrough', handleCanPlay);
+                        }
+                    };
+
+                    if (video.readyState >= 4) {
+                        loadedCount++;
+                        if (loadedCount === videos.length) playGroup();
+                    } else {
+                        video.addEventListener('canplaythrough', handleCanPlay);
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 以 sync-group 为单位做分组
+            const groups = {};
+
+            const videos = document.querySelectorAll('video[data-sync-group]');
+
+            videos.forEach(video => {
+                const groupName = video.dataset.syncGroup;
+
+                if (!groups[groupName]) {
+                groups[groupName] = { videos: [], readyCount: 0 };
+                }
+                groups[groupName].videos.push(video);
+
+                // 每个视频加载完成（或几乎可以流畅播放）时触发
+                video.addEventListener('canplaythrough', () => {
+                const group = groups[groupName];
+                group.readyCount++;
+
+                // 这一组所有视频都 ready 了
+                if (group.readyCount === group.videos.length) {
+                    group.videos.forEach(v => {
+                    try {
+                        v.currentTime = 0;  // 从头开始
+                    } catch (e) {}
+
+                    const p = v.play();
+                    if (p && p.catch) p.catch(() => {});
+                    });
+                }
+                }, { once: true });
+            });
+        });
+    </script>
+
+
+    <section class="py-12 bg-white border-t border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Citation</h2>
+            <div class="mx-auto max-w-5xl">
+                <pre class="text-left whitespace-pre-wrap break-words bg-gray-50 border border-gray-200 rounded-lg p-5 text-sm sm:text-base text-gray-800 leading-relaxed overflow-x-auto"><code>@article{yang2026permavid,
+  title={PermaVid: Consistent Video Generation Across Edits via Disentangled Context Memory},
+  author={Yang, Shuai and Gao, Bingjie and Liu, Ziwei and Wang, Jiaqi and Lin, Dahua and Wu, Tong},
+  journal={arXiv preprint arXiv:26xx.xxxxx},
+  year={2026}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- <div class="container-fluid py-10 bg-white">
+        <div class="center-text flex justify-center">
+            <a href="https://clustrmaps.com/site/1bzgi"  title="Visit tracker"><img src="//www.clustrmaps.com/map_v2.png?d=uVAj7gydWIyD0AQWR3NPboT8GvHlNvMR9cAYCUq58m0&cl=ffffff" /></a>
+            <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=080808&w=300&t=tt&d=d6Vpq3KIn61IaMyX3K1e3cYlB--hsS2XorgAs89ixhQ&co=ffffff&cmo=24a3ed&cmn=ff5353&ct=171515'></script>
+        </div>
+    </div> -->
+
+    <footer class="py-8 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-600">
+                &copy; PermaVid 2026
+            </div>
+        </div>
+    </footer>
+
+
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.hover-3d').forEach((el) => observer.observe(el));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Video Hover Play Logic
+            const videoElements = document.querySelectorAll('.video-hover-play');
+            videoElements.forEach(video => {
+                video.addEventListener('mouseenter', () => {
+                    video.currentTime = 0;
+                    video.play();
+                });
+                
+                video.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                    video.load(); // Reset to poster
+                });
+            });
+
+
+            // GIF Hover Play Logic
+            const gifImages = document.querySelectorAll('.gif-hover-play');
+            gifImages.forEach(img => {
+                const staticSrc = img.src;
+                const gifSrc = img.dataset.gif;
+                
+                img.addEventListener('mouseenter', () => {
+                    img.src = gifSrc;
+                });
+                
+                img.addEventListener('mouseleave', () => {
+                    img.src = staticSrc;
+                });
+            });
+
+            const nav = document.getElementById('main-nav');
+            let lastScroll = 0;
+
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                 
+                if (currentScroll > 50) {
+                    nav.classList.add('bg-white', 'shadow-md', 'backdrop-blur-md');
+                    nav.classList.remove('bg-transparent');
+                    nav.querySelector('span').classList.replace('text-white', 'text-gray-900');
+                    nav.querySelectorAll('a').forEach(link => {
+                        link.classList.replace('text-white/80', 'text-gray-600');
+                    });
+                } else {
+                    nav.classList.remove('bg-white', 'shadow-md', 'backdrop-blur-md');
+                    nav.classList.add('bg-transparent');
+                    nav.querySelector('span').classList.replace('text-gray-900', 'text-white');
+                    nav.querySelectorAll('a').forEach(link => {
+                        link.classList.replace('text-gray-600', 'text-white/80');
+                    });
+                }
+                
+                lastScroll = currentScroll;
+            });
+        });
+
+
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////
+        // Carousel Logic
+        //////////////////////////////////////////////////////////////////
+        let currentSlide = 0;
+        const totalSlides = 4;
+        
+        function updateCarousel() {
+            const track = document.getElementById('carousel-track');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        // Expose functions to global scope for onclick handlers
+        window.goToSlide = goToSlide;
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////
+        // video editing Logic
+        //////////////////////////////////////////////////////////////////
+        // In-context Carousel Logic
+        let currentInContextSlide = 0;
+        const totalInContextSlides = 26; // Updated after adding sixth slide
+
+        function updateInContextCarousel() {
+            const track = document.getElementById('in-context-track');
+            const dots = document.querySelectorAll('.in-context-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentInContextSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentInContextSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToInContextSlide(slideIndex) {
+            currentInContextSlide = slideIndex;
+            updateInContextCarousel();
+        }
+
+        function nextInContextSlide() {
+            currentInContextSlide = (currentInContextSlide + 1) % totalInContextSlides;
+            updateInContextCarousel();
+        }
+
+        function prevInContextSlide() {
+            currentInContextSlide = (currentInContextSlide - 1 + totalInContextSlides) % totalInContextSlides;
+            updateInContextCarousel();
+        }
+
+        window.goToInContextSlide = goToInContextSlide;
+        window.nextInContextSlide = nextInContextSlide;
+        window.prevInContextSlide = prevInContextSlide;
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////
+        // video generation Logic
+        //////////////////////////////////////////////////////////////////
+        let currentVideoSlide = 0;
+        const totalVideoSlides = 3;
+        
+        function updateVideoCarousel() {
+            const track = document.getElementById('video-track');
+            const dots = document.querySelectorAll('.video-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentVideoSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentVideoSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToVideoSlide(slideIndex) {
+            currentVideoSlide = slideIndex;
+            updateVideoCarousel();
+        }
+
+        function nextVideoSlide() {
+            currentVideoSlide = (currentVideoSlide + 1) % totalVideoSlides;
+            updateVideoCarousel();
+        }
+
+        function prevVideoSlide() {
+            currentVideoSlide = (currentVideoSlide - 1 + totalVideoSlides) % totalVideoSlides;
+            updateVideoCarousel();
+        }
+        
+        // Expose functions to global scope for onclick handlers
+        window.goToVideoSlide = goToVideoSlide;
+        window.nextVideoSlide = nextVideoSlide;
+        window.prevVideoSlide = prevVideoSlide;
+
+
+
+
+
+
+
+        // Vision Signal Tab Logic
+        function switchVisionTab(tabName) {
+            // Hide all content
+            document.querySelectorAll('.vision-tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // Show selected content
+            const selectedContent = document.getElementById(`vision-${tabName}`);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+                selectedContent.classList.add('block');
+            }
+            
+            // Update buttons
+            const buttons = document.querySelectorAll('.vision-tab-btn');
+            buttons.forEach(btn => {
+                // Reset all buttons to inactive state
+                btn.classList.remove('bg-gray-800', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-600', 'hover:bg-gray-300');
+                
+                // Check if this button corresponds to the clicked tab
+                if (btn.getAttribute('onclick').includes(tabName)) {
+                    btn.classList.remove('bg-gray-200', 'text-gray-600', 'hover:bg-gray-300');
+                    btn.classList.add('bg-gray-800', 'text-white');
+                }
+            });
+        }
+        
+        // Expose to global scope
+        window.switchVisionTab = switchVisionTab;
+
+
+        // Style Reference Carousel Logic
+        let currentSrefSlide = 0;
+        const totalSrefSlides = 30;
+
+        function updateSrefCarousel() {
+            const track = document.getElementById('sref-track');
+            const dots = document.querySelectorAll('.sref-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentSrefSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentSrefSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToSrefSlide(slideIndex) {
+            currentSrefSlide = slideIndex;
+            updateSrefCarousel();
+        }
+
+        function nextSrefSlide() {
+            currentSrefSlide = (currentSrefSlide + 1) % totalSrefSlides;
+            updateSrefCarousel();
+        }
+
+        function prevSrefSlide() {
+            currentSrefSlide = (currentSrefSlide - 1 + totalSrefSlides) % totalSrefSlides;
+            updateSrefCarousel();
+        }
+
+        window.goToSrefSlide = goToSrefSlide;
+        window.nextSrefSlide = nextSrefSlide;
+        window.prevSrefSlide = prevSrefSlide;
+
+
+
+        // Style Reference Carousel Logic
+        let currentEditSlide = 0;
+        const totalEditSlides = 5;
+
+        function updateEditCarousel() {
+            const track = document.getElementById('edit-track');
+            const dots = document.querySelectorAll('.edit-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentEditSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentEditSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToEditSlide(slideIndex) {
+            currentEditSlide = slideIndex;
+            updateEditCarousel();
+        }
+
+        function nextEditSlide() {
+            currentEditSlide = (currentEditSlide + 1) % totalEditSlides;
+            updateEditCarousel();
+        }
+
+        function prevEditSlide() {
+            currentEditSlide = (currentEditSlide - 1 + totalEditSlides) % totalEditSlides;
+            updateEditCarousel();
+        }
+
+        window.goToEditSlide = goToEditSlide;
+        window.nextEditSlide = nextEditSlide;
+        window.prevEditSlide = prevEditSlide;
+
+
+
+
+
+
+
+        // World Exploration Carousel Logic
+        let currentWorldSlide = 0;
+        const totalWorldSlides = 26;
+
+        // function updateWorldCarousel() {
+        //     const track = document.getElementById('world-track');
+        //     const dots = document.querySelectorAll('.world-dot');
+        //     // const viewport = document.getElementById('world-viewport');
+            
+        //     // Update track position
+        //     track.style.transform = `translateX(-${currentWorldSlide * 100}%)`;
+            
+        //     // Update viewport height
+        //     const slides = track.children;
+        //     if (slides[currentWorldSlide]) {
+        //         const currentSlideHeight = slides[currentWorldSlide].offsetHeight;
+        //         const style = window.getComputedStyle(viewport);
+        //         const vPadding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        //         viewport.style.height = (currentSlideHeight + vPadding) + 'px';
+        //     }
+            
+        //     // Update dots
+        //     dots.forEach((dot, index) => {
+        //         if (index === currentWorldSlide) {
+        //             dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+        //             dot.classList.add('bg-gray-800');
+        //         } else {
+        //             dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+        //             dot.classList.remove('bg-gray-800');
+        //         }
+        //     });
+        // }
+        function updateWorldCarousel() {
+            const track = document.getElementById('world-track');
+            const dots = document.querySelectorAll('.world-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentWorldSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentWorldSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToWorldSlide(slideIndex) {
+            currentWorldSlide = slideIndex;
+            updateWorldCarousel();
+        }
+
+        function nextWorldSlide() {
+            currentWorldSlide = (currentWorldSlide + 1) % totalWorldSlides;
+            updateWorldCarousel();
+        }
+
+        function prevWorldSlide() {
+            currentWorldSlide = (currentWorldSlide - 1 + totalWorldSlides) % totalWorldSlides;
+            updateWorldCarousel();
+        }
+
+        window.goToWorldSlide = goToWorldSlide;
+        window.nextWorldSlide = nextWorldSlide;
+        window.prevWorldSlide = prevWorldSlide;
+
+
+
+
+
+
+        // Storyboard Carousel Logic
+        let currentStoryboardSlide = 0;
+        const totalStoryboardSlides = 33;
+
+        function updateStoryboardCarousel() {
+            const track = document.getElementById('storyboard-track');
+            const dots = document.querySelectorAll('.storyboard-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentStoryboardSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentStoryboardSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToStoryboardSlide(slideIndex) {
+            currentStoryboardSlide = slideIndex;
+            updateStoryboardCarousel();
+        }
+
+        function nextStoryboardSlide() {
+            currentStoryboardSlide = (currentStoryboardSlide + 1) % totalStoryboardSlides;
+            updateStoryboardCarousel();
+        }
+
+        function prevStoryboardSlide() {
+            currentStoryboardSlide = (currentStoryboardSlide - 1 + totalStoryboardSlides) % totalStoryboardSlides;
+            updateStoryboardCarousel();
+        }
+
+        window.goToStoryboardSlide = goToStoryboardSlide;
+        window.nextStoryboardSlide = nextStoryboardSlide;
+        window.prevStoryboardSlide = prevStoryboardSlide;
+
+
+
+        // Und Carousel Logic
+        let currentUndSlide = 0;
+        const totalUndSlides = 3;
+
+        function updateUndCarousel() {
+            const track = document.getElementById('und-track');
+            const dots = document.querySelectorAll('.und-dot');
+            
+            // Update track position
+            track.style.transform = `translateX(-${currentUndSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentUndSlide) {
+                    dot.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.add('bg-gray-800');
+                } else {
+                    dot.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                    dot.classList.remove('bg-gray-800');
+                }
+            });
+        }
+
+        function goToUndSlide(slideIndex) {
+            currentUndSlide = slideIndex;
+            updateUndCarousel();
+        }
+
+        function nextUndSlide() {
+            currentUndSlide = (currentUndSlide + 1) % totalUndSlides;
+            updateUndCarousel();
+        }
+
+        function prevUndSlide() {
+            currentUndSlide = (currentUndSlide - 1 + totalUndSlides) % totalUndSlides;
+            updateUndCarousel();
+        }
+
+        window.goToUndSlide = goToUndSlide;
+        window.nextUndSlide = nextUndSlide;
+        window.prevUndSlide = prevUndSlide;
+
+
+
+        window.addEventListener('load', () => {
+            // Initialize heights for carousels that need adaptive height
+            updateWorldCarousel();
+        });
+
+        window.addEventListener('resize', () => {
+            updateWorldCarousel();
+        });
+    </script>
+</body>
+</html>
